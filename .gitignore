@@ -53,7 +53,7 @@ Thumbs.db
 *.sql
 
 # Configuration files
-
+*.yaml
 
 #templates
 *.tmpl
