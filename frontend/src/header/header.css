@@ -1,0 +1,22 @@
+.header{
+    height: 75px;
+    background-color: #8090bc;
+    width: 100%;
+}
+.header-items{
+    width: 80%;
+    background-color: #8090bc;
+    height: 70px;
+    margin-left: 10%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+}
+.header-item {
+    background-color: #8090bc;
+    font-size: 23px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
