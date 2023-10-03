@@ -1,24 +1,16 @@
 import React from 'react';
 import './header.css'
+import {headerItems} from "./headerItems";
+import { NavLink} from "react-router-dom";
 const Header = () => {
     return (
         <div className={'header'}>
             <div className={'header-items'}>
-                <div className={'header-item'}>
-                    Группы
-                </div>
-                <div className={'header-item'}>
-                    Аудитории
-                </div>
-                <div className={'header-item'}>
-                    Преподаватели
-                </div>
-                <div className={'header-item'}>
-                    Предметы
-                </div>
-                <div className={'header-item'}>
-                    Сгенерировать
-                </div>
+                {headerItems.map(item =>
+                    <NavLink  className={'header-item'} to={item.path} key={item.name}>
+                        {item.name}
+                    </NavLink>
+                )}
             </div>
         </div>
 
