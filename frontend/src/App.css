@@ -6,4 +6,9 @@
     height: 1100px;
     border: 2px solid black;
 }
-
+.error{
+    color: red;
+    font-size:30;
+    display:flex;
+    justify-content:center
+}

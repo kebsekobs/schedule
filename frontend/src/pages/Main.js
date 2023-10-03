@@ -3,7 +3,7 @@ import '../App.css'
 const Main = () => {
     return (
         <div className={'page'}>
-            ghbdtn
+            Главная
         </div>
     );
 };
