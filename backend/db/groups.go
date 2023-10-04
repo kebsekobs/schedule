@@ -7,7 +7,7 @@ import (
 )
 
 func DeleteGroup(id int, db *sql.DB) error {
-	_, err := db.Exec("DELETE FROM groups WHERE id=?",
+	_, err := db.Exec("DELETE FROM schedule.groups WHERE id=?",
 		id)
 	if err != nil {
 		return err
@@ -21,8 +21,8 @@ type Group struct {
 }
 
 func SelectGroups(db *sql.DB) ([]map[string]string, error) {
-	result, err := db.Query("SELECT * FROM groups")
-	defer result.Close()
+	result, err := db.Query("SELECT * FROM schedule.groups")
+	//defer result.Close()
 	if err != nil {
 		return nil, err
 	}
