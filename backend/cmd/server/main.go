@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/kebsekobs/schedule/backend/iternal/config"
-	"github.com/kebsekobs/schedule/backend/iternal/db"
+	"github.com/kebsekobs/schedule/backend/internal/config"
+	"github.com/kebsekobs/schedule/backend/internal/db"
 
 	_ "github.com/go-sql-driver/mysql"
 )
