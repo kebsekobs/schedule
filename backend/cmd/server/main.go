@@ -3,9 +3,10 @@ package main
 import (
 	"database/sql"
 	"fmt"
-	"github.com/kebsekobs/schedule/tree/main/backend/config"
-	"github.com/kebsekobs/schedule/tree/main/backend/db"
 	"time"
+
+	"github.com/kebsekobs/schedule/backend/iternal/config"
+	"github.com/kebsekobs/schedule/backend/iternal/db"
 
 	_ "github.com/go-sql-driver/mysql"
 )
