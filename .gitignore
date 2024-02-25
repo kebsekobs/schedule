@@ -54,6 +54,8 @@ Thumbs.db
 
 # Configuration files
 *.yaml
+*.json
+
 
 #templates
 *.tmpl

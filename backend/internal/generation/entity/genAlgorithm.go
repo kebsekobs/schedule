@@ -1,4 +1,4 @@
-package generation
+package entity
 
 type GenAlgorithm struct {
 	AverageFitness        int

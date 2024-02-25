@@ -1,8 +1,9 @@
-package generation
+package entity
 
 type Class struct {
-	Teacher int
-	Room int
-	Name string
-	Hours int
+	Teacher *Teacher
+	Room    *Room
+	Groups  []*Group
+	Name    string
+	Hours   int
 }
