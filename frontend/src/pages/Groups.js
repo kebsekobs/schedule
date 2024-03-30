@@ -1,11 +1,13 @@
-import React from 'react';
+import React from "react";
 
 const Groups = () => {
-    return (
-        <div className={'page'}>
-            Группы
-        </div>
-    );
+  return (
+    <>
+      <div className={"page"}>
+        Группы
+      </div>
+    </>
+  );
 };
 
 export default Groups;
