@@ -1,4 +1,4 @@
-package entity
+package generation
 
 type Teacher struct {
 	ID   int
