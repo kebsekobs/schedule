@@ -3,7 +3,7 @@
 .page{
     margin: 50px 50px 0 50px  ;
     background-color: white;
-    height: 1100px;
+    height: 100vh;
     border: 2px solid black;
 }
 .error{
