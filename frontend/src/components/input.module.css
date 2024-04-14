@@ -2,12 +2,6 @@
 @import "@radix-ui/colors/violet.css";
 @import "@radix-ui/colors/mauve.css";
 
-input,
-button {
-  all: unset;
-  box-sizing: border-box;
-}
-
 .FormRoot {
   display: flex;
   width: 260px;

@@ -2,5 +2,18 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  background-color: #ffffff;
+}
+
+:root {
+  --main-color: #8090BC;
+  --background-color: #F7F9FF;
+  --warning-color: #c83044;
+}
+
+body {
+  background-color: var(--background-color);
+}
+
+h2 {
+  background-color: var(--background-color);
 }

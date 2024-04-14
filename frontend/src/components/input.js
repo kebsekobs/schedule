@@ -1,11 +1,11 @@
 import * as Form from "@radix-ui/react-form";
-import "./input.css";
+import styles from "./input.module.css";
 import Button from "./button";
 
 function Input({ children }) {
   return (
-    <Form.Root className="FormRoot">
-      <Form.Field className="FormField" name="input">
+    <Form.Root className={styles["FormRoot"]}>
+      <Form.Field className={styles["FormField"]} name="input">
         <div
           style={{
             display: "flex",
@@ -14,12 +14,12 @@ function Input({ children }) {
             justifyContent: "space-between",
           }}
         >
-          <Form.Message className="FormMessage" match="valueMissing">
+          <Form.Message className={styles["FormMessage"]} match="valueMissing">
             {children}
           </Form.Message>
         </div>
         <Form.Control asChild>
-          <input className="Input" required />
+          <input className={styles["Input"]} required />
         </Form.Control>
       </Form.Field>
       <Form.Submit asChild>

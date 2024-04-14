@@ -1,14 +1,17 @@
 .App {
+  background-color: var(--background-color);
 }
-.page{
-    margin: 50px 50px 0 50px  ;
-    background-color: white;
-    height: 100vh;
-    border: 2px solid black;
+.page {
+  margin: 30px;
+  height: 100vh;
+  border: 2px solid black;
+  border-radius: 10px;
+  padding: 40px;
+  background-color: white;
 }
-.error{
-    color: red;
-    font-size:30px;
-    display:flex;
-    justify-content:center
+.error {
+  color: red;
+  font-size: 30px;
+  display: flex;
+  justify-content: center;
 }
