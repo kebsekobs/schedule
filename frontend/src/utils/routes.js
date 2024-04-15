@@ -1,5 +1,5 @@
 import Main from "../pages/Main";
-import Classrooms from "../pages/Classrooms";
+import Classrooms from "../pages/classrooms/Classrooms";
 import Teachers from "../pages/Teachers";
 import Disciplines from "../pages/Disciplines";
 import Error from "../pages/Error";

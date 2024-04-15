@@ -1,35 +1,59 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { useAddGroupsMutation } from "../api/AddGroupMutation";
-import styles from "./modal.module.css";
+import { useClassroomByIdQuery } from "../api/getClassroomById";
+import { useEditClassroomMutation } from "../api/editClassroomMutation";
+import styles from "../../groups/modals/modal.module.css";
 import Button from "../../../components/button";
 
-const AddGroupModal = ({ isOpen, toggleModal }) => {
-  const form = useForm();
+const EditGroupModal = ({ isOpen, toggleModal, id }) => {
+  const classroomByIdQuery = useClassroomByIdQuery(id);
+  const [isDataLoaded, setIsDataLoaded] = useState(false);
+
   const {
-    reset,
     register,
     handleSubmit,
     formState: { errors },
-  } = form;
+    reset,
+  } = useForm({
+    defaultValues: {
+      groupId: "",
+      name: "",
+      capacity: "",
+      magistracy: false,
+    },
+  });
 
-  const addGroupMutation = useAddGroupsMutation();
+  const editClassroomMutation = useEditClassroomMutation();
   const onSubmit = (data) => {
-    console.log(data);
-    addGroupMutation.mutateAsync(data);
+    data.id = id;
+    editClassroomMutation.mutateAsync(data);
     toggleModal();
     reset();
   };
 
+  useEffect(() => {
+    if (classroomByIdQuery.data) {
+      reset({
+        classroomId: classroomByIdQuery.data.classroomId,
+        capacity: classroomByIdQuery.data.capacity,
+      });
+      setIsDataLoaded(true);
+    }
+  }, [classroomByIdQuery.data, reset]);
+
   if (!isOpen) {
     return null;
+  }
+
+  if (!isDataLoaded) {
+    return <div>Loading...</div>;
   }
 
   return (
     <div className={styles["backdrop"]}>
       <div className={styles["modal"]}>
         <div className={styles["modal-header"]}>
-          <h2>Введите данные</h2>
+          <h2>Измените данные</h2>
           <Button onClick={toggleModal} styleFeature="close">
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -47,46 +71,28 @@ const AddGroupModal = ({ isOpen, toggleModal }) => {
           onSubmit={handleSubmit(onSubmit)}
           className={styles["groups-form"]}
         >
-          <label htmlFor="consent" className={styles["label"]}>
-            <input
-              type="checkbox"
-              id="magistracy"
-              className={styles["checkbox"]}
-              {...register("magistracy")}
-            />
-            Магистратура
-          </label>
           <input
-            type={"number"}
-            {...register("groupId", { required: true })}
-            placeholder="Введите номер группы"
+            {...register("classroomId", { required: true })}
+            placeholder="Введите аудиторию"
             className={styles["input"]}
           />
-          {errors.inputId && (
-            <span className={styles["error"]}>Это поле обязательно</span>
-          )}
-          <input
-            {...register("name", { required: true })}
-            placeholder="Введите код группы"
-            className={styles["input"]}
-          />
-          {errors.inputName && (
-            <span className={styles["error"]}>Это поле обязательно</span>
+          {errors.id && (
+            <span className={styles.error}>Это поле обязательно</span>
           )}
           <input
             type={"number"}
             {...register("capacity", { required: true })}
-            placeholder="Введите количество студентов"
+            placeholder="Введите вместимость аудитории"
             className={styles["input"]}
           />
-          {errors.inputCapacity && (
-            <span className={styles["error"]}>Это поле обязательно</span>
+          {errors.capacity && (
+            <span className={styles.error}>Это поле обязательно</span>
           )}
-          <Button type="submit">Отправить</Button>
+          <Button type="submit">Oтправить</Button>
         </form>
       </div>
     </div>
   );
 };
 
-export default AddGroupModal;
+export default EditGroupModal;
