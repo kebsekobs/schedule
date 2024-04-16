@@ -1,6 +1,6 @@
 import Main from "../pages/Main";
 import Classrooms from "../pages/classrooms/Classrooms";
-import Teachers from "../pages/Teachers";
+import Teachers from "../pages/teachers/Teachers";
 import Disciplines from "../pages/Disciplines";
 import Error from "../pages/Error";
 import Groups from "../pages/groups/Groups";

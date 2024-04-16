@@ -11,6 +11,12 @@ export const useClassroomsQuery = () => {
 
 function sortData(data) {
     return data.sort((a, b) => {
-        return a.groupId - b.groupId;
+        if (a.classroomId < b.classroomId) {
+            return -1;
+          }
+          if (a.classroomId > b.classroomId) {
+            return 1;
+          }
+          return 0;
     });
 }

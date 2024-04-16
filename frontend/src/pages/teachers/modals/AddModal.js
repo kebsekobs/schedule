@@ -1,57 +1,35 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { useForm } from "react-hook-form";
-import { useClassroomByIdQuery } from "../api/getClassroomById";
-import { useEditClassroomMutation } from "../api/editClassroomMutation";
+import { useAddTeacherMutation } from "../api/AddTeacherMutation";
 import styles from "../../groups/modals/modal.module.css";
 import Button from "../../../components/button";
 
-const EditGroupModal = ({ isOpen, toggleModal, id }) => {
-  const classroomByIdQuery = useClassroomByIdQuery(id);
-  const [isDataLoaded, setIsDataLoaded] = useState(false);
-
+const AddTeacherModal = ({ isOpen, toggleModal }) => {
+  const form = useForm();
   const {
+    reset,
     register,
     handleSubmit,
     formState: { errors },
-    reset,
-  } = useForm({
-    defaultValues: {
-      classroomId: "",
-      capacity: "",
-    },
-  });
+  } = form;
 
-  const editClassroomMutation = useEditClassroomMutation();
+  const addTeacherMutation = useAddTeacherMutation();
   const onSubmit = (data) => {
-    data.id = id;
-    editClassroomMutation.mutateAsync(data);
+    console.log(data);
+    addTeacherMutation.mutateAsync(data);
     toggleModal();
     reset();
   };
 
-  useEffect(() => {
-    if (classroomByIdQuery.data) {
-      reset({
-        classroomId: classroomByIdQuery.data.classroomId,
-        capacity: classroomByIdQuery.data.capacity,
-      });
-      setIsDataLoaded(true);
-    }
-  }, [classroomByIdQuery.data, reset]);
-
   if (!isOpen) {
     return null;
-  }
-
-  if (!isDataLoaded) {
-    return <div>Loading...</div>;
   }
 
   return (
     <div className={styles["backdrop"]}>
       <div className={styles["modal"]}>
         <div className={styles["modal-header"]}>
-          <h2>Измените данные</h2>
+          <h2>Введите данные</h2>
           <Button onClick={toggleModal} styleFeature="close">
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -70,27 +48,26 @@ const EditGroupModal = ({ isOpen, toggleModal, id }) => {
           className={styles["groups-form"]}
         >
           <input
-            {...register("classroomId", { required: true })}
-            placeholder="Введите аудиторию"
+            {...register("name", { required: true })}
+            placeholder="Введите ФИО (Иванов И.И.)"
             className={styles["input"]}
           />
-          {errors.id && (
-            <span className={styles.error}>Это поле обязательно</span>
+          {errors.inputId && (
+            <span className={styles["error"]}>Это поле обязательно</span>
           )}
           <input
-            type={"number"}
-            {...register("capacity", { required: true })}
-            placeholder="Введите вместимость аудитории"
+            {...register("initials", { required: true })}
+            placeholder="Введите инициалы (И.И.)"
             className={styles["input"]}
           />
-          {errors.capacity && (
-            <span className={styles.error}>Это поле обязательно</span>
+          {errors.inputName && (
+            <span className={styles["error"]}>Это поле обязательно</span>
           )}
-          <Button type="submit">Oтправить</Button>
+          <Button type="submit">Отправить</Button>
         </form>
       </div>
     </div>
   );
 };
 
-export default EditGroupModal;
+export default AddTeacherModal;

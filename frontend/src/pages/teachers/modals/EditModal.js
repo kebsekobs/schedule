@@ -1,14 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { useClassroomByIdQuery } from "../api/getClassroomById";
-import { useEditClassroomMutation } from "../api/editClassroomMutation";
+import { useTeacherByIdQuery } from "../api/getTeacherById";
+import { useEditTeacherMutation } from "../api/EditTeacherMutation";
 import styles from "../../groups/modals/modal.module.css";
 import Button from "../../../components/button";
 
 const EditGroupModal = ({ isOpen, toggleModal, id }) => {
-  const classroomByIdQuery = useClassroomByIdQuery(id);
+  const teacherByIdQuery = useTeacherByIdQuery(id);
   const [isDataLoaded, setIsDataLoaded] = useState(false);
-
   const {
     register,
     handleSubmit,
@@ -16,28 +15,28 @@ const EditGroupModal = ({ isOpen, toggleModal, id }) => {
     reset,
   } = useForm({
     defaultValues: {
-      classroomId: "",
-      capacity: "",
+      name: "",
+      initials: "",
     },
   });
 
-  const editClassroomMutation = useEditClassroomMutation();
+  const editTeacherMutation = useEditTeacherMutation();
   const onSubmit = (data) => {
     data.id = id;
-    editClassroomMutation.mutateAsync(data);
+    editTeacherMutation.mutateAsync(data);
     toggleModal();
     reset();
   };
 
   useEffect(() => {
-    if (classroomByIdQuery.data) {
+    if (teacherByIdQuery.data) {
       reset({
-        classroomId: classroomByIdQuery.data.classroomId,
-        capacity: classroomByIdQuery.data.capacity,
+        name: teacherByIdQuery.data.name,
+        initials: teacherByIdQuery.data.initials,
       });
       setIsDataLoaded(true);
     }
-  }, [classroomByIdQuery.data, reset]);
+  }, [teacherByIdQuery.data, reset]);
 
   if (!isOpen) {
     return null;
@@ -70,17 +69,16 @@ const EditGroupModal = ({ isOpen, toggleModal, id }) => {
           className={styles["groups-form"]}
         >
           <input
-            {...register("classroomId", { required: true })}
-            placeholder="Введите аудиторию"
+            {...register("name", { required: true })}
+            placeholder="Измените ФИО (Иванов И.И.)"
             className={styles["input"]}
           />
-          {errors.id && (
-            <span className={styles.error}>Это поле обязательно</span>
+          {errors.name && (
+            <span className={styles["error"]}>Это поле обязательно</span>
           )}
           <input
-            type={"number"}
-            {...register("capacity", { required: true })}
-            placeholder="Введите вместимость аудитории"
+            {...register("initials", { required: true })}
+            placeholder="Измените инициалы (И.И.)"
             className={styles["input"]}
           />
           {errors.capacity && (
