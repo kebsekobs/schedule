@@ -19,6 +19,7 @@ const EditGroupModal = ({ isOpen, toggleModal, id }) => {
 
     const editGroupMutation = useEditGroupMutation();
     const onSubmit = data => {
+        console.log(data)
         data.id = id;
         editGroupMutation.mutateAsync(data)
         toggleModal();
