@@ -1,11 +1,11 @@
 import { Pencil1Icon, TrashIcon } from "@radix-ui/react-icons";
-import { useDeleteGroupMutation } from "../api/useDeleteGroupMutation";
+import { useDeleteTeacherMutation } from "../api/useDeleteTeacherMutation";
 import { useState } from "react";
-import EditModal from "../modals/EditModal";
-import styles from "./table.module.css";
+import EditModal from "../modals/EditModal.js";
+import styles from "../../groups/table/table.module.css";
 
 export function EditCell(props) {
-  const deleteGroupMutation = useDeleteGroupMutation();
+  const deleteTeacherMutation = useDeleteTeacherMutation();
   const id = props.props.original.id;
 
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
@@ -13,9 +13,9 @@ export function EditCell(props) {
   const toggleEditModal = () => {
     setIsEditModalOpen(!isEditModalOpen);
   };
-  function deleteGroup() {
-    if (window.confirm("Вы уверены, что хотите удалить группу?"))
-      deleteGroupMutation.mutateAsync(id);
+  function deleteTeacher() {
+    if (window.confirm("Вы уверены, что хотите удалить преподавателя?"))
+    deleteTeacherMutation.mutateAsync(id);
   }
 
   return (
@@ -27,7 +27,7 @@ export function EditCell(props) {
         <p>Изменить</p>
         <Pencil1Icon />
       </div>
-      <div className={styles["btns-wrapper"]} onClick={deleteGroup}>
+      <div className={styles["btns-wrapper"]} onClick={deleteTeacher}>
         <p style={{ color: "var(--warning-color)" }}>Удалить</p>
         <TrashIcon />
       </div>

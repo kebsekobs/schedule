@@ -1,7 +1,9 @@
 export const CellHelper = {
-    renderGroupName: (row) => {
-        const {groupId, magistracy} = row;
+  renderGroupName: (row) => {
+    const { groupId, magistracy } = row;
 
-        return `${Math.floor(groupId/100)} Курс ${magistracy ? 'Магистратуры' : 'Баклавариата'}`
-    }
-}
+    return `${Math.floor(groupId / 100)} Курс ${
+      magistracy ? "Магистратуры" : "Бакалавриата"
+    }`;
+  },
+};

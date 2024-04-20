@@ -1,10 +1,10 @@
 import React from "react";
 import { useForm } from "react-hook-form";
-import { useAddGroupsMutation } from "../api/AddGroupMutation";
-import styles from "./modal.module.css";
+import { useAddClassroomMutation } from "../api/addClassroomMutation";
+import styles from "../../groups/modals/modal.module.css";
 import Button from "../../../components/button";
 
-const AddGroupModal = ({ isOpen, toggleModal }) => {
+const AddClassroomModal = ({ isOpen, toggleModal }) => {
   const form = useForm();
   const {
     reset,
@@ -13,10 +13,10 @@ const AddGroupModal = ({ isOpen, toggleModal }) => {
     formState: { errors },
   } = form;
 
-  const addGroupMutation = useAddGroupsMutation();
+  const addClassroomMutation = useAddClassroomMutation();
   const onSubmit = (data) => {
     console.log(data);
-    addGroupMutation.mutateAsync(data);
+    addClassroomMutation.mutateAsync(data);
     toggleModal();
     reset();
   };
@@ -47,36 +47,18 @@ const AddGroupModal = ({ isOpen, toggleModal }) => {
           onSubmit={handleSubmit(onSubmit)}
           className={styles["groups-form"]}
         >
-          <label htmlFor="consent" className={styles["label"]}>
-            <input
-              type="checkbox"
-              id="magistracy"
-              className={styles["checkbox"]}
-              {...register("magistracy")}
-            />
-            Магистратура
-          </label>
           <input
-            type={"number"}
-            {...register("groupId", { required: true })}
-            placeholder="Введите номер группы"
+            {...register("classroomId", { required: true })}
+            placeholder="Введите аудиторию"
             className={styles["input"]}
           />
           {errors.inputId && (
             <span className={styles["error"]}>Это поле обязательно</span>
           )}
           <input
-            {...register("name", { required: true })}
-            placeholder="Введите код группы"
-            className={styles["input"]}
-          />
-          {errors.inputName && (
-            <span className={styles["error"]}>Это поле обязательно</span>
-          )}
-          <input
             type={"number"}
             {...register("capacity", { required: true })}
-            placeholder="Введите количество студентов"
+            placeholder="Введите вместимость аудитории"
             className={styles["input"]}
           />
           {errors.inputCapacity && (
@@ -89,4 +71,4 @@ const AddGroupModal = ({ isOpen, toggleModal }) => {
   );
 };
 
-export default AddGroupModal;
+export default AddClassroomModal;
