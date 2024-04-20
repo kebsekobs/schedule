@@ -104,7 +104,10 @@ func TestTimeTable(t *testing.T) {
 		},
 	}
 
-	test.timeTable.Init(5, 2)
+	test.timeTable.Hours = 5
+	test.timeTable.Days = 10
+
+	test.timeTable.Init()
 	t.Run("letsgo", func(t *testing.T) {
 		for group, value := range test.timeTable.GroupSlots {
 			fmt.Println(group)

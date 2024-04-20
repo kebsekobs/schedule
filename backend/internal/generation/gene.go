@@ -6,8 +6,9 @@ import (
 
 // Gene представляет собой последовательность выбора слотов для одной группы
 type Gene struct {
-	Slots []*GeneSlot
-	Flags []bool
+	Slots       []*GeneSlot
+	Flags       []bool // true == занято
+	Hours, Days int
 }
 
 type GeneSlot struct {
@@ -15,7 +16,7 @@ type GeneSlot struct {
 	Flag  bool // true == потоковая пара
 }
 
-func (g *Gene) Fill(hours, days int) {
+func (g *Gene) Fill() {
 	/*
 		Потоковые пары раскидываем перед не потоковыми
 
@@ -35,7 +36,7 @@ func (g *Gene) Fill(hours, days int) {
 	*/
 
 	// генерим случайную последовательность пар для каждой группы
-	slots := rand.Perm(hours * days)
+	slots := rand.Perm(g.Hours * g.Days)
 	// проходимся по всем слотам
 	for _, value := range slots {
 		// проверяем занят ли слот
@@ -51,4 +52,16 @@ func (g *Gene) Fill(hours, days int) {
 		}
 	}
 
+}
+
+func (g *Gene) Clear() {
+	var clearSlots []*GeneSlot
+	for _, slot := range g.Slots {
+		if !slot.Flag {
+			g.Flags[slot.Value] = false
+		} else {
+			clearSlots = append(clearSlots, slot)
+		}
+	}
+	g.Slots = clearSlots
 }

@@ -13,50 +13,53 @@ func TestInit(t *testing.T) {
 		chromosome generation.Chromosome
 	}{}
 
+	test.chromosome.Days = 10
+	test.chromosome.Hours = 5
+
 	test.chromosome.CommonClasses = []*generation.CommonClass{
-		// {
-		// 	ID: 1,
-		// 	Teacher: &generation.Teacher{
-		// 		ID:   2,
-		// 		Name: "b",
-		// 	},
-		// 	Room: &generation.Room{
-		// 		ID: "1",
-		// 	},
-		// 	Groups: []*generation.Group{
-		// 		{
-		// 			ID: "1",
-		// 		},
-		// 		{
-		// 			ID: "2",
-		// 		},
-		// 		{
-		// 			ID: "3",
-		// 		},
-		// 	},
-		// 	Name:  "asdf",
-		// 	Hours: 3,
-		// },
-		// {
-		// 	ID: 4,
-		// 	Teacher: &generation.Teacher{
-		// 		ID:   1,
-		// 		Name: "a",
-		// 	},
-		// 	Room: &generation.Room{
-		// 		ID: "1",
-		// 	},
-		// 	Groups: []*generation.Group{
-		// 		{
-		// 			ID: "2",
-		// 		},
-		// 		{
-		// 			ID: "3",
-		// 		},
-		// 	},
-		// 	Name:  "asdf",
-		// 	Hours: 2,
-		// },
+		{
+			ID: 1,
+			Teacher: &generation.Teacher{
+				ID:   2,
+				Name: "bbb",
+			},
+			Room: &generation.Room{
+				ID: "1",
+			},
+			Groups: []*generation.Group{
+				{
+					ID: "1",
+				},
+				{
+					ID: "2",
+				},
+				{
+					ID: "3",
+				},
+			},
+			Name:  "math",
+			Hours: 3,
+		},
+		{
+			ID: 4,
+			Teacher: &generation.Teacher{
+				ID:   1,
+				Name: "aaa",
+			},
+			Room: &generation.Room{
+				ID: "2",
+			},
+			Groups: []*generation.Group{
+				{
+					ID: "2",
+				},
+				{
+					ID: "3",
+				},
+			},
+			Name:  "eng",
+			Hours: 2,
+		},
 	}
 
 	test.chromosome.Groups = []*generation.Group{
@@ -72,12 +75,14 @@ func TestInit(t *testing.T) {
 	}
 
 	test.chromosome.TimeTable = &generation.TimeTable{
+		Hours: 5,
+		Days:  10,
 		Classes: []*generation.Class{
 			{
-				ID: 1,
+				ID: 3,
 				Teacher: &generation.Teacher{
 					ID:   1,
-					Name: "a",
+					Name: "aaa",
 				},
 				Room: &generation.Room{
 					ID: "1",
@@ -85,22 +90,22 @@ func TestInit(t *testing.T) {
 				Group: &generation.Group{
 					ID: "1",
 				},
-				Name:  "qwer",
+				Name:  "rus",
 				Hours: 10,
 			},
 			{
 				ID: 2,
 				Teacher: &generation.Teacher{
 					ID:   1,
-					Name: "a",
+					Name: "aaa",
 				},
 				Room: &generation.Room{
-					ID: "1",
+					ID: "5",
 				},
 				Group: &generation.Group{
 					ID: "2",
 				},
-				Name:  "zxcv",
+				Name:  "lit",
 				Hours: 10,
 			},
 		},
@@ -110,9 +115,9 @@ func TestInit(t *testing.T) {
 		Groups: test.chromosome.Groups,
 	}
 
-	test.chromosome.TimeTable.Init(5, 2)
+	test.chromosome.TimeTable.Init()
 
-	test.chromosome.Init(5, 2)
+	test.chromosome.Init()
 	t.Run("letsgo", func(t *testing.T) {
 		for group, value := range test.chromosome.Genes {
 			fmt.Println(group)
@@ -121,6 +126,11 @@ func TestInit(t *testing.T) {
 			for key, i := range value.Slots {
 				fmt.Println(key)
 				fmt.Println(i)
+				fmt.Println()
+				fmt.Println()
+
+				fmt.Println()
+
 			}
 			fmt.Println()
 			fmt.Println()
@@ -128,6 +138,7 @@ func TestInit(t *testing.T) {
 			fmt.Println()
 
 		}
+		generation.SaveXLSX(test.chromosome)
 		fmt.Println(test.chromosome.Fitness)
 	})
 }
