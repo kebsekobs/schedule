@@ -5,14 +5,13 @@ import {
   useReactTable,
 } from "@tanstack/react-table";
 import { columns } from "./columns";
-import styles from "./table.module.css";
+import styles from "../../groups/table/table.module.css";
 
 const CoursesTable = ({ data }) => {
   const table = useReactTable({
     columns,
     data,
     getCoreRowModel: getCoreRowModel(),
-    // columnResizeMode: "onChange",
   });
 
   return (
@@ -50,39 +49,6 @@ const CoursesTable = ({ data }) => {
         ))}
       </tbody>
     </table>
-    // <table className={styles["table"]}>
-    //   <thead>
-    //     {table.getHeaderGroups().map((headerGroup) => (
-    //       <tr className={styles["tr"]} key={headerGroup.id}>
-    //         {headerGroup.headers.map((header) => (
-    //           <th className={styles["th"]} key={header.id}>
-    //             <h3>{header.column.columnDef.header}</h3>
-    //             {/* <div
-    //               className={`${styles["resizer"]} ${
-    //                 header.column.getIsResizing() && styles["isResizing"]
-    //               }`}
-    //               onMouseDown={header.getResizeHandler}
-    //               onTouchStart={header.getResizeHandler}
-    //             ></div> */}
-    //           </th>
-    //         ))}
-    //       </tr>
-    //     ))}
-    //   </thead>
-    //   <tbody className={styles["table-body"]}>
-    //     {table.getRowModel().rows.map((row) => (
-    //       <tr key={row.id} className={styles["tr"]}>
-    //         {row.getVisibleCells().map((cell) => (
-    //           <td key={cell.id} className={styles["td"]}>
-    //             <h3>
-    //               {flexRender(cell.column.columnDef.cell, cell.getContext())}
-    //             </h3>
-    //           </td>
-    //         ))}
-    //       </tr>
-    //     ))}
-    //   </tbody>
-    // </table>
   );
 };
 
