@@ -16,6 +16,21 @@ func TestInit(t *testing.T) {
 	test.chromosome.Days = 10
 	test.chromosome.Hours = 5
 
+	test.chromosome.Rooms = []*generation.Room{
+		{
+			ID:       "1",
+			Capacity: 10,
+		},
+		{
+			ID:       "2",
+			Capacity: 15,
+		},
+		{
+			ID:       "3",
+			Capacity: 20,
+		},
+	}
+
 	test.chromosome.CommonClasses = []*generation.CommonClass{
 		{
 			ID: 1,
@@ -23,18 +38,18 @@ func TestInit(t *testing.T) {
 				ID:   2,
 				Name: "bbb",
 			},
-			Room: &generation.Room{
-				ID: "1",
-			},
 			Groups: []*generation.Group{
 				{
-					ID: "1",
+					ID:       "1",
+					Quantity: 5,
 				},
 				{
-					ID: "2",
+					ID:       "2",
+					Quantity: 7,
 				},
 				{
-					ID: "3",
+					ID:       "3",
+					Quantity: 8,
 				},
 			},
 			Name:  "math",
@@ -46,15 +61,14 @@ func TestInit(t *testing.T) {
 				ID:   1,
 				Name: "aaa",
 			},
-			Room: &generation.Room{
-				ID: "2",
-			},
 			Groups: []*generation.Group{
 				{
-					ID: "2",
+					ID:       "2",
+					Quantity: 7,
 				},
 				{
-					ID: "3",
+					ID:       "3",
+					Quantity: 8,
 				},
 			},
 			Name:  "eng",
@@ -64,13 +78,16 @@ func TestInit(t *testing.T) {
 
 	test.chromosome.Groups = []*generation.Group{
 		{
-			ID: "1",
+			ID:       "1",
+			Quantity: 5,
 		},
 		{
-			ID: "2",
+			ID:       "2",
+			Quantity: 7,
 		},
 		{
-			ID: "3",
+			ID:       "3",
+			Quantity: 8,
 		},
 	}
 
@@ -84,11 +101,9 @@ func TestInit(t *testing.T) {
 					ID:   1,
 					Name: "aaa",
 				},
-				Room: &generation.Room{
-					ID: "1",
-				},
 				Group: &generation.Group{
-					ID: "1",
+					ID:       "1",
+					Quantity: 5,
 				},
 				Name:  "rus",
 				Hours: 10,
@@ -99,11 +114,9 @@ func TestInit(t *testing.T) {
 					ID:   1,
 					Name: "aaa",
 				},
-				Room: &generation.Room{
-					ID: "5",
-				},
 				Group: &generation.Group{
-					ID: "2",
+					ID:       "2",
+					Quantity: 7,
 				},
 				Name:  "lit",
 				Hours: 10,
@@ -119,25 +132,25 @@ func TestInit(t *testing.T) {
 
 	test.chromosome.Init()
 	t.Run("letsgo", func(t *testing.T) {
-		for group, value := range test.chromosome.Genes {
-			fmt.Println(group)
-			fmt.Println()
+		// for group, value := range test.chromosome.Genes {
+		// 	fmt.Println(group)
+		// 	fmt.Println()
 
-			for key, i := range value.Slots {
-				fmt.Println(key)
-				fmt.Println(i)
-				fmt.Println()
-				fmt.Println()
+		// 	for key, i := range value.Slots {
+		// 		fmt.Println(key)
+		// 		fmt.Println(i)
+		// 		fmt.Println()
+		// 		fmt.Println()
 
-				fmt.Println()
+		// 		fmt.Println()
 
-			}
-			fmt.Println()
-			fmt.Println()
+		// 	}
+		// 	fmt.Println()
+		// 	fmt.Println()
 
-			fmt.Println()
+		// 	fmt.Println()
 
-		}
+		// }
 		generation.SaveXLSX(test.chromosome)
 		fmt.Println(test.chromosome.Fitness)
 	})

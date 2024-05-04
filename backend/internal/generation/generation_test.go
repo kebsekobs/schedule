@@ -16,6 +16,21 @@ func TestGeneration(t *testing.T) {
 	test.gnrt.Days = 10
 	test.gnrt.Hours = 5
 
+	test.gnrt.Rooms = []*generation.Room{
+		{
+			ID:       "1",
+			Capacity: 10,
+		},
+		{
+			ID:       "2",
+			Capacity: 15,
+		},
+		{
+			ID:       "3",
+			Capacity: 20,
+		},
+	}
+
 	test.gnrt.CommonClasses = []*generation.CommonClass{
 		{
 			ID: 1,
@@ -23,18 +38,18 @@ func TestGeneration(t *testing.T) {
 				ID:   2,
 				Name: "b",
 			},
-			Room: &generation.Room{
-				ID: "1",
-			},
 			Groups: []*generation.Group{
 				{
-					ID: "1",
+					ID:       "1",
+					Quantity: 5,
 				},
 				{
-					ID: "2",
+					ID:       "2",
+					Quantity: 7,
 				},
 				{
-					ID: "3",
+					ID:       "3",
+					Quantity: 8,
 				},
 			},
 			Name:  "test1",
@@ -46,15 +61,14 @@ func TestGeneration(t *testing.T) {
 				ID:   1,
 				Name: "a",
 			},
-			Room: &generation.Room{
-				ID: "1",
-			},
 			Groups: []*generation.Group{
 				{
-					ID: "2",
+					ID:       "2",
+					Quantity: 7,
 				},
 				{
-					ID: "3",
+					ID:       "3",
+					Quantity: 8,
 				},
 			},
 			Name:  "test2",
@@ -64,13 +78,16 @@ func TestGeneration(t *testing.T) {
 
 	test.gnrt.Groups = []*generation.Group{
 		{
-			ID: "1",
+			ID:       "1",
+			Quantity: 5,
 		},
 		{
-			ID: "2",
+			ID:       "2",
+			Quantity: 7,
 		},
 		{
-			ID: "3",
+			ID:       "3",
+			Quantity: 8,
 		},
 	}
 	test.gnrt.Classes = []*generation.Class{
@@ -80,11 +97,9 @@ func TestGeneration(t *testing.T) {
 				ID:   1,
 				Name: "a",
 			},
-			Room: &generation.Room{
-				ID: "1",
-			},
 			Group: &generation.Group{
-				ID: "1",
+				ID:       "1",
+				Quantity: 5,
 			},
 			Name:  "qwer",
 			Hours: 10,
@@ -95,11 +110,9 @@ func TestGeneration(t *testing.T) {
 				ID:   1,
 				Name: "a",
 			},
-			Room: &generation.Room{
-				ID: "1",
-			},
 			Group: &generation.Group{
-				ID: "2",
+				ID:       "2",
+				Quantity: 7,
 			},
 			Name:  "zxcv",
 			Hours: 10,

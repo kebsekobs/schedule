@@ -19,11 +19,17 @@ type CommonClass struct {
 }
 
 func (c *CommonClass) makeClass(i int) *Class {
+	group := Group{
+		ID: c.Groups[i].ID,
+	}
+	for _, g := range c.Groups {
+		group.Quantity += g.Quantity
+	}
 	return &Class{
 		ID:      c.ID,
 		Teacher: c.Teacher,
 		Room:    c.Room,
-		Group:   c.Groups[i],
+		Group:   &group,
 		Name:    c.Name,
 		Hours:   c.Hours,
 	}

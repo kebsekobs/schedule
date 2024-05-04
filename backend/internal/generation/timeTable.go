@@ -50,7 +50,8 @@ func (t *TimeTable) fillSlots(group *Group, class *Class) {
 			log.Printf("У группы %v не осталось свободных слотов для пар", group.ID)
 			break
 		}
-		t.GroupSlots[group.ID].Classes[t.GroupSlots[group.ID].I] = class
+		localClass := *class
+		t.GroupSlots[group.ID].Classes[t.GroupSlots[group.ID].I] = &localClass
 		t.GroupSlots[group.ID].I++
 		if hourCount < class.Hours {
 			hourCount++
