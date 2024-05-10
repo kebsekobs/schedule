@@ -3,8 +3,8 @@ import {service} from "../../groups/api/service";
 
 export const useGetDisciplinesQuery = () => {
     return useQuery({
-        queryKey: ['lessons'],
-        queryFn: () => service.getLessons()
+        queryKey: ['disciplines'],
+        queryFn: () => service.getDisciplines()
     });
 };
 

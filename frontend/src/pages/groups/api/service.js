@@ -1,14 +1,14 @@
 import axios from "axios";
 
 const group_url = `http://localhost:3001/groups`;
-const lessons_url = 'http://localhost:3001/lessons'
+const disciplines_url = 'http://localhost:3001/disciplines'
 
 export const service = {
        getGroups: function (config = {}) {
               return axios.get(group_url, config).then(response => response.data);
        },
-       getLessons: function (config = {}) {
-              return axios.get(lessons_url, config).then(response => response.data);
+       getDisciplines: function (config = {}) {
+              return axios.get(disciplines_url, config).then(response => response.data);
        },
        addGroups: function (config = {}) {
               return axios.post(group_url, config).then(response => response.data);

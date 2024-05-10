@@ -1,14 +1,15 @@
 import {createColumnHelper} from '@tanstack/react-table';
 import {CellHelper} from "./CellHelpers";
+import {EditCell} from "./EditCell";
 
 const {accessor, group} = createColumnHelper();
 
 export const columns = [
     group({
-        id: '@id',
-        header: 'id',
+        id: '@disciplinesId',
+        header: 'disciplinesId',
         columns: [
-            accessor('id', {
+            accessor('disciplinesId', {
                 header: '',
                 size: 400,
                 cell: data =><div style={{ textAlign: 'center'}}>{data.getValue()}</div>,
@@ -59,6 +60,16 @@ export const columns = [
             })
         ]
     }),
-
+    group({
+        id: "@edit",
+        header: "",
+        columns: [
+            accessor("edit", {
+                header: "",
+                size: 50,
+                cell: (data) => <EditCell props={data.row} />,
+            }),
+        ],
+    }),
 ];
 

@@ -6,7 +6,7 @@ export const CellHelper = {
             <div style={{ textAlign: 'center'}}>
                 {relatedGroupsArray.map((group, index) => (
                     <React.Fragment key={index}>
-                        {group}{' '}
+                        {group.slice(0, group.indexOf(' '))}{' '}
                     </React.Fragment>
                 ))}
             </div>

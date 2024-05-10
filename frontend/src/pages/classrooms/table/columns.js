@@ -31,10 +31,10 @@ export const columns = [
     ],
   }),
   group({
-    id: "@capacity",
+    id: "@edit",
     header: "",
     columns: [
-      accessor("capacity", {
+      accessor("edit", {
         header: "",
         size: 50,
         cell: (data) => <EditCell props={data.row} />,

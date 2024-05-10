@@ -15,7 +15,6 @@ const AddClassroomModal = ({ isOpen, toggleModal }) => {
 
   const addClassroomMutation = useAddClassroomMutation();
   const onSubmit = (data) => {
-    console.log(data);
     addClassroomMutation.mutateAsync(data);
     toggleModal();
     reset();

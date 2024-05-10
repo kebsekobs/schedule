@@ -1,10 +1,12 @@
-import React from "react";
+import React, {} from "react";
 import { useForm } from "react-hook-form";
-import { useAddTeacherMutation } from "../api/AddTeacherMutation";
 import styles from "../../groups/modals/modal.module.css";
 import Button from "../../../components/button";
+import {useAddDisciplinesMutation} from "../api/addDisciplinesMutation";
+import {useGroupsQuery} from "../../groups/api/getGroupsQuery";
+import {useTeachersQuery} from "../../teachers/api/getTeachersQuery";
 
-const AddTeacherModal = ({ isOpen, toggleModal }) => {
+const AddDisciplinesModal = ({ isOpen, toggleModal }) => {
   const form = useForm();
   const {
     reset,
@@ -13,9 +15,12 @@ const AddTeacherModal = ({ isOpen, toggleModal }) => {
     formState: { errors },
   } = form;
 
-  const addTeacherMutation = useAddTeacherMutation();
+  const groupsQuery = useGroupsQuery();
+  const teachersQuery = useTeachersQuery();
+  const addDisciplinesMutation = useAddDisciplinesMutation();
+
   const onSubmit = (data) => {
-    addTeacherMutation.mutateAsync(data);
+    addDisciplinesMutation.mutateAsync(data);
     toggleModal();
     reset();
   };
@@ -47,21 +52,37 @@ const AddTeacherModal = ({ isOpen, toggleModal }) => {
           className={styles["groups-form"]}
         >
           <input
-            {...register("name", { required: true })}
-            placeholder="Введите ФИО (Иванов И.И.)"
-            className={styles["input"]}
+              {...register("disciplinesId", { required: true })}
+              placeholder="Введите id дисциплины"
+              className={styles["input"]}
           />
-          {errors.inputId && (
-            <span className={styles["error"]}>Это поле обязательно</span>
+          {errors.id && (
+              <span className={styles.error}>Это поле обязательно</span>
           )}
           <input
-            {...register("initials", { required: true })}
-            placeholder="Введите инициалы (И.И.)"
-            className={styles["input"]}
+              {...register("name", { required: true })}
+              placeholder="Введите имя дисциплины"
+              className={styles["input"]}
           />
-          {errors.inputName && (
-            <span className={styles["error"]}>Это поле обязательно</span>
-          )}
+          <input
+              {...register("hours", { required: true })}
+              placeholder="Введите количество часов в неделю"
+              className={styles["input"]}
+          />
+          <select {...register("teachers", { required: true })}
+                  className={styles["input"]}
+          >
+            {teachersQuery.data.map((el, index) => (
+                <option  key={index}  value={`${el.id}`}>{`Преподователь: ${el.name}`}</option>
+            ))}
+          </select>
+          <select {...register("relatedGroupsId", { required: true })} multiple
+              className={styles["input"]}
+          >
+            {groupsQuery.data.map((el, index) => (
+                <option  key={index}  value={`${el.groupId} ${el.id}`}>{`groupId:${el.groupId} Наименование группы${el.name}`}</option>
+            ))}
+          </select>
           <Button type="submit">Отправить</Button>
         </form>
       </div>
@@ -69,4 +90,4 @@ const AddTeacherModal = ({ isOpen, toggleModal }) => {
   );
 };
 
-export default AddTeacherModal;
+export default AddDisciplinesModal;

@@ -5,7 +5,7 @@ import {
   useReactTable,
 } from "@tanstack/react-table";
 import { columns } from "./columns";
-import styles from "../../groups/table/table.module.css";
+import styles from '../../shared/style/table.module.css';
 
 const CoursesTable = ({ data }) => {
   const table = useReactTable({

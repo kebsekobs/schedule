@@ -15,7 +15,6 @@ const AddGroupModal = ({ isOpen, toggleModal }) => {
 
   const addGroupMutation = useAddGroupsMutation();
   const onSubmit = (data) => {
-    console.log(data);
     addGroupMutation.mutateAsync(data);
     toggleModal();
     reset();

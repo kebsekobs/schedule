@@ -1,12 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { useClassroomByIdQuery } from "../api/getClassroomById";
-import { useEditClassroomMutation } from "../api/editClassroomMutation";
 import styles from "../../groups/modals/modal.module.css";
 import Button from "../../../components/button";
+import {useEditDisciplinesMutation} from "../api/editDisciplinesMutation";
+import {useDisciplinesByIdQuery} from "../api/geDisciplinesById";
+import {useGroupsQuery} from "../../groups/api/getGroupsQuery";
+import {useTeachersQuery} from "../../teachers/api/getTeachersQuery";
 
-const EditGroupModal = ({ isOpen, toggleModal, id }) => {
-  const classroomByIdQuery = useClassroomByIdQuery(id);
+const EditDisciplinesModal = ({ isOpen, toggleModal, id }) => {
+  const disciplinesByIdQuery = useDisciplinesByIdQuery(id);
   const [isDataLoaded, setIsDataLoaded] = useState(false);
 
   const {
@@ -21,23 +23,29 @@ const EditGroupModal = ({ isOpen, toggleModal, id }) => {
     },
   });
 
-  const editClassroomMutation = useEditClassroomMutation();
+  const editDisciplinesMutation = useEditDisciplinesMutation();
+  const getGroup = useGroupsQuery().data;
+  const teachersQuery = useTeachersQuery();
+
   const onSubmit = (data) => {
-    editClassroomMutation.mutateAsync(data);
+    data.id = id;
+    editDisciplinesMutation.mutateAsync(data);
     toggleModal();
     reset();
   };
 
   useEffect(() => {
-    if (classroomByIdQuery.data) {
+    if (disciplinesByIdQuery.data) {
       reset({
-        id: classroomByIdQuery.data.id,
-        classroomId: classroomByIdQuery.data.classroomId,
-        capacity: classroomByIdQuery.data.capacity,
+        disciplinesId: disciplinesByIdQuery.data.disciplinesId,
+        name: disciplinesByIdQuery.data.name,
+        teachers: disciplinesByIdQuery.data.teachers,
+        hours: disciplinesByIdQuery.data.hours,
+        relatedGroupsId: disciplinesByIdQuery.data.relatedGroupsId
       });
       setIsDataLoaded(true);
     }
-  }, [classroomByIdQuery.data, reset]);
+  }, [disciplinesByIdQuery.data, reset]);
 
   if (!isOpen) {
     return null;
@@ -46,6 +54,10 @@ const EditGroupModal = ({ isOpen, toggleModal, id }) => {
   if (!isDataLoaded) {
     return <div>Loading...</div>;
   }
+  function getRelatedGroup(data,id){
+    return data.relatedGroupsId.includes(id)
+  }
+
 
   return (
     <div className={styles["backdrop"]}>
@@ -70,22 +82,37 @@ const EditGroupModal = ({ isOpen, toggleModal, id }) => {
           className={styles["groups-form"]}
         >
           <input
-            {...register("classroomId", { required: true })}
-            placeholder="Введите аудиторию"
+            {...register("disciplinesId", { required: true })}
+            placeholder="Введите id дисциплины"
             className={styles["input"]}
           />
           {errors.id && (
             <span className={styles.error}>Это поле обязательно</span>
           )}
           <input
-            type={"number"}
-            {...register("capacity", { required: true })}
-            placeholder="Введите вместимость аудитории"
+            {...register("name", { required: true })}
+            placeholder="Введите имя дисциплины"
             className={styles["input"]}
           />
-          {errors.capacity && (
-            <span className={styles.error}>Это поле обязательно</span>
-          )}
+          <input
+              {...register("hours", { required: true })}
+              placeholder="Введите количество часов в неделю"
+              className={styles["input"]}
+          />
+          <select {...register("teachers", { required: true })}
+                  className={styles["input"]}
+          >
+            {teachersQuery.data.map((el, index) => (
+                <option  key={index}  value={`${el.id}`}>{`Преподователь: ${el.name}`}</option>
+            ))}
+          </select>
+          <select {...register("relatedGroupsId")} required multiple
+                  className={styles["input"]}
+          >
+            {getGroup.map((el, index) => (
+                <option  key={index} selected={getRelatedGroup(disciplinesByIdQuery.data, el.id)}  value={`${el.groupId} ${el.id}`}>{`groupId:${el.groupId} Наименование группы${el.name}`}</option>
+            ))}
+          </select>
           <Button type="submit">Oтправить</Button>
         </form>
       </div>
@@ -93,4 +120,4 @@ const EditGroupModal = ({ isOpen, toggleModal, id }) => {
   );
 };
 
-export default EditGroupModal;
+export default EditDisciplinesModal;
