@@ -1,9 +1,11 @@
 package generation
 
 import (
+	"cmp"
 	"fmt"
 	"log"
 	"math/rand"
+	"slices"
 )
 
 var (
@@ -19,6 +21,7 @@ type Chromosome struct {
 	Groups        []*Group
 	CommonClasses []*CommonClass
 	TimeTable     *TimeTable
+	Rooms         []*Room
 	Hours, Days   int
 }
 
@@ -39,10 +42,11 @@ func (c *Chromosome) Init() {
 	for _, class := range c.CommonClasses {
 		hourCount := 1
 		slots := rand.Perm(c.Hours * c.Days)
+	newTimeSlot:
 		for _, value := range slots {
 			for _, group := range class.Groups {
 				if c.Genes[group.ID].Flags[value] {
-					continue
+					continue newTimeSlot
 				}
 			}
 			for _, group := range class.Groups {
@@ -65,7 +69,11 @@ func (c *Chromosome) Init() {
 	for _, gene := range c.Genes {
 		gene.Fill()
 		log.Println("final: ", len(gene.Slots))
-
+		if len(gene.Slots) > 50 {
+			for _, el := range gene.Slots {
+				fmt.Println(el.Value)
+			}
+		}
 	}
 
 	c.Fitness = c.GetFitness()
@@ -88,15 +96,30 @@ func (c *Chromosome) GetFitness() float64 {
 
 	type TimeSlots struct {
 		Teachers map[int]int
-		Rooms    map[string]int
+		Rooms    []SlotRoom
 	}
 	timeSlots := make(map[int]TimeSlots)
 
-	// Записываем данные из двумерного массива на лист
+	slices.SortFunc(c.Rooms, func(i, j *Room) int {
+		return cmp.Compare(i.Capacity, j.Capacity)
+	})
+
+	for i := 0; i < (c.Hours * c.Days); i++ {
+		rooms := make([]SlotRoom, 0, len(c.Rooms))
+		for _, room := range c.Rooms {
+			rooms = append(rooms, SlotRoom{
+				Room: room,
+			})
+		}
+		timeSlots[i] = TimeSlots{
+			Teachers: make(map[int]int),
+			Rooms:    rooms,
+		}
+	}
+
 	for groupID, gene := range c.Genes {
 		for i, slot := range gene.Slots {
 			if i >= 50 {
-				log.Println(i)
 				continue
 			}
 			if _, ok := c.TimeTable.GroupSlots[groupID]; !ok {
@@ -106,7 +129,6 @@ func (c *Chromosome) GetFitness() float64 {
 
 			if _, ok := timeSlots[slot.Value]; !ok {
 				timeSlots[slot.Value] = TimeSlots{
-					Rooms:    make(map[string]int),
 					Teachers: make(map[int]int),
 				}
 			}
@@ -117,10 +139,30 @@ func (c *Chromosome) GetFitness() float64 {
 				} else {
 					timeSlots[slot.Value].Teachers[class.Teacher.ID] = class.ID
 				}
-				if classID, ok := timeSlots[slot.Value].Rooms[class.Room.ID]; ok && classID != class.ID {
+
+				if class.Room == nil {
+					for j, room := range timeSlots[slot.Value].Rooms {
+						if room.Room.Capacity < class.Group.Quantity {
+							continue
+						}
+
+						if room.ClassID == class.ID {
+							class.Room = room.Room
+							break
+						}
+						if room.ClassID == 0 && room.Room.Capacity >= class.Group.Quantity {
+							class.Room = room.Room
+							room.ClassID = class.ID
+							timeSlot := timeSlots[slot.Value]
+							timeSlot.Rooms[j] = room
+							timeSlots[slot.Value] = timeSlot
+
+							break
+						}
+					}
+				}
+				if class.Room == nil {
 					roomPoint++
-				} else {
-					timeSlots[slot.Value].Rooms[class.Room.ID] = class.ID
 				}
 			}
 		}

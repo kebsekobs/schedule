@@ -54,6 +54,7 @@ func (g *Generation) initPopulation() {
 			TimeTable:     g.TimeTable,
 			Hours:         g.Hours,
 			Days:          g.Days,
+			Rooms:         g.Rooms,
 		}
 
 		chromosome.Init()
@@ -83,10 +84,11 @@ func (g *Generation) createNewGeneration() {
 		TimeTable:     g.TimeTable,
 		Hours:         g.Hours,
 		Days:          g.Days,
+		Rooms:         g.Rooms,
 	}
 
 	for numberOfGeneration < maxGenerations {
-		log.Println("numberOfGeneration: ", numberOfGeneration)
+		log.Println("number of generation: ", numberOfGeneration)
 		g.newGeneration = make([]*Chromosome, 0, populationSize)
 		count := 0
 
@@ -113,8 +115,6 @@ func (g *Generation) createNewGeneration() {
 
 				son = &father
 			}
-
-			log.Println(son.Genes)
 
 			// mutation
 			son.customMutation()
