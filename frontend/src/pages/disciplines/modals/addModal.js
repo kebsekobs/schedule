@@ -1,10 +1,10 @@
-import React, {} from "react";
-import { useForm } from "react-hook-form";
-import styles from "../../groups/modals/modal.module.css";
+import { useForm, Controller } from "react-hook-form";
+import styles from "../../shared/style/modal.module.css";
 import Button from "../../../components/button";
-import {useAddDisciplinesMutation} from "../api/addDisciplinesMutation";
-import {useGroupsQuery} from "../../groups/api/getGroupsQuery";
-import {useTeachersQuery} from "../../teachers/api/getTeachersQuery";
+import { useAddDisciplinesMutation } from "../api/addDisciplinesMutation";
+import { useGroupsQuery } from "../../groups/api/getGroupsQuery";
+import { useTeachersQuery } from "../../teachers/api/getTeachersQuery";
+import { Multiselect } from "multiselect-react-dropdown";
 
 const AddDisciplinesModal = ({ isOpen, toggleModal }) => {
   const form = useForm();
@@ -12,6 +12,7 @@ const AddDisciplinesModal = ({ isOpen, toggleModal }) => {
     reset,
     register,
     handleSubmit,
+    control,
     formState: { errors },
   } = form;
 
@@ -23,6 +24,24 @@ const AddDisciplinesModal = ({ isOpen, toggleModal }) => {
     addDisciplinesMutation.mutateAsync(data);
     toggleModal();
     reset();
+  };
+
+  const options = groupsQuery.data?.map((el) => `${el.groupId} ${el.id}`);
+
+  const multiSelectStyles = {
+    multiselectContainer: {
+      backgroundColor: "white",
+    },
+    inputField: {
+      margin: "5px",
+    },
+    chips: {
+      background: "#8090bc",
+    },
+    optionContainer: {
+      maxHeight: "160px",
+      overflowY: "scroll",
+    },
   };
 
   if (!isOpen) {
@@ -51,38 +70,59 @@ const AddDisciplinesModal = ({ isOpen, toggleModal }) => {
           onSubmit={handleSubmit(onSubmit)}
           className={styles["groups-form"]}
         >
+          <label>Введите id дисциплины</label>
           <input
-              {...register("disciplinesId", { required: true })}
-              placeholder="Введите id дисциплины"
-              className={styles["input"]}
+            {...register("disciplinesId", { required: true })}
+            placeholder="abc31"
+            className={styles["input"]}
           />
           {errors.id && (
-              <span className={styles.error}>Это поле обязательно</span>
+            <span className={styles.error}>Это поле обязательно</span>
           )}
+          <label>Введите имя дисциплины</label>
           <input
-              {...register("name", { required: true })}
-              placeholder="Введите имя дисциплины"
-              className={styles["input"]}
+            {...register("name", { required: true })}
+            placeholder="Ин.яз"
+            className={styles["input"]}
           />
+          <label>Введите количество часов в неделю</label>
           <input
-              {...register("hours", { required: true })}
-              placeholder="Введите количество часов в неделю"
-              className={styles["input"]}
+            {...register("hours", { required: true })}
+            placeholder="20"
+            className={styles["input"]}
           />
-          <select {...register("teachers", { required: true })}
-                  className={styles["input"]}
+          <label>Выберете Преподователя</label>
+          <select
+            {...register("teachers", { required: true })}
+            className={styles["input"]}
           >
             {teachersQuery.data.map((el, index) => (
-                <option  key={index}  value={`${el.id}`}>{`Преподователь: ${el.name}`}</option>
+              <option
+                key={index}
+                value={`${el.id}`}
+              >{`Преподователь: ${el.name}`}</option>
             ))}
           </select>
-          <select {...register("relatedGroupsId", { required: true })} multiple
-              className={styles["input"]}
-          >
-            {groupsQuery.data.map((el, index) => (
-                <option  key={index}  value={`${el.groupId} ${el.id}`}>{`groupId:${el.groupId} Наименование группы${el.name}`}</option>
-            ))}
-          </select>
+          <label>Выберете группу(ы)</label>
+          <Controller
+            control={control}
+            name="relatedGroupsId"
+            render={({ field: { value, onChange } }) => (
+              <Multiselect
+                placeholder="314 GTH-JDO-NSK"
+                options={options}
+                isObject={false}
+                showCheckbox={true}
+                hidePlaceholder={true}
+                closeOnSelect={false}
+                onSelect={onChange}
+                onRemove={onChange}
+                selectedValues={value}
+                showArrow={true}
+                style={multiSelectStyles}
+              />
+            )}
+          />
           <Button type="submit">Отправить</Button>
         </form>
       </div>

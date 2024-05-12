@@ -7,7 +7,7 @@ const {accessor, group} = createColumnHelper();
 export const columns = [
     group({
         id: '@disciplinesId',
-        header: 'disciplinesId',
+        header: 'Id',
         columns: [
             accessor('disciplinesId', {
                 header: '',
@@ -18,7 +18,7 @@ export const columns = [
     }),
     group({
         id: '@name',
-        header: 'name',
+        header: 'Дисциплина',
         columns: [
             accessor('name', {
                 header: '',
@@ -29,7 +29,7 @@ export const columns = [
     }),
     group({
         id: '@teachers',
-        header: 'teachers',
+        header: 'Преподаватель',
         columns: [
             accessor('teachers', {
                 header: '',
@@ -40,7 +40,7 @@ export const columns = [
     }),
     group({
         id: '@hours',
-        header: 'hours',
+        header: 'Часы/нед',
         columns: [
             accessor('hours', {
                 header: '',
@@ -51,7 +51,7 @@ export const columns = [
     }),
     group({
         id: '@relatedGroupsId',
-        header: 'relatedGroupsId',
+        header: 'Группы',
         columns: [
             accessor('relatedGroupsId', {
                 header: '',
