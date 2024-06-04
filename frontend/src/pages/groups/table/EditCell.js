@@ -2,7 +2,7 @@ import { Pencil1Icon, TrashIcon } from "@radix-ui/react-icons";
 import { useDeleteGroupMutation } from "../api/useDeleteGroupMutation";
 import { useState } from "react";
 import EditModal from "../modals/EditModal";
-import styles from "./table.module.css";
+import styles from '../../shared/style/table.module.css';
 
 export function EditCell(props) {
   const deleteGroupMutation = useDeleteGroupMutation();

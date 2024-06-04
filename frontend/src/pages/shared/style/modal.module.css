@@ -18,6 +18,7 @@
   padding: 20px;
   border-radius: 8px;
   gap: 20px;
+  max-width: min-content;
 }
 .modal-header {
   display: flex;
@@ -26,18 +27,18 @@
   background-color: var(--background-color);
 }
 
-input[type="checkbox"] {
+/* input[type="checkbox"] {
   -moz-appearance: none;
   -webkit-appearance: none;
   -o-appearance: none;
   outline: none;
   content: none;
-}
+} */
 
 .input {
   width: 300px;
   padding: 10px;
-  margin: 10px 0;
+  margin-bottom: 10px;
   border-radius: 4px;
   border: 1px solid #ccc;
 }
@@ -98,6 +99,7 @@ input[type="checkbox"] {
 
 .label {
   display: flex;
+  margin-bottom: 10px;
   font-size: 18px;
   align-items: center;
   background-color: var(--background-color);

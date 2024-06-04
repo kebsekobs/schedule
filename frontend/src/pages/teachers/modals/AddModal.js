@@ -1,7 +1,7 @@
 import React from "react";
 import { useForm } from "react-hook-form";
 import { useAddTeacherMutation } from "../api/AddTeacherMutation";
-import styles from "../../groups/modals/modal.module.css";
+import styles from "../../shared/style/modal.module.css";
 import Button from "../../../components/button";
 
 const AddTeacherModal = ({ isOpen, toggleModal }) => {
@@ -15,7 +15,6 @@ const AddTeacherModal = ({ isOpen, toggleModal }) => {
 
   const addTeacherMutation = useAddTeacherMutation();
   const onSubmit = (data) => {
-    console.log(data);
     addTeacherMutation.mutateAsync(data);
     toggleModal();
     reset();
@@ -47,17 +46,19 @@ const AddTeacherModal = ({ isOpen, toggleModal }) => {
           onSubmit={handleSubmit(onSubmit)}
           className={styles["groups-form"]}
         >
+          <label>Введите ФИО</label>
           <input
             {...register("name", { required: true })}
-            placeholder="Введите ФИО (Иванов И.И.)"
+            placeholder="Иванов И.И."
             className={styles["input"]}
           />
           {errors.inputId && (
             <span className={styles["error"]}>Это поле обязательно</span>
           )}
+          <label>Введите инициалы</label>
           <input
             {...register("initials", { required: true })}
-            placeholder="Введите инициалы (И.И.)"
+            placeholder="И.И."
             className={styles["input"]}
           />
           {errors.inputName && (

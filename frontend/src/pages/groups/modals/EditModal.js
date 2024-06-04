@@ -3,7 +3,7 @@ import { useForm } from "react-hook-form";
 import { useAddGroupsMutation } from "../api/AddGroupMutation";
 import { useGroupByIdQuery } from "../api/getGroupById";
 import { useEditGroupMutation } from "../api/EditGroupMutation";
-import styles from "./modal.module.css";
+import styles from "../../shared/style/modal.module.css";
 import Button from "../../../components/button";
 
 const EditGroupModal = ({ isOpen, toggleModal, id }) => {
@@ -75,6 +75,7 @@ const EditGroupModal = ({ isOpen, toggleModal, id }) => {
           onSubmit={handleSubmit(onSubmit)}
           className={styles["groups-form"]}
         >
+          <label>Измените степень</label>
           <label htmlFor="magistracy" className={styles.label}>
             <input
               type="checkbox"
@@ -84,27 +85,30 @@ const EditGroupModal = ({ isOpen, toggleModal, id }) => {
             />
             Магистратура
           </label>
+          <label>Измените номер группы</label>
           <input
             type={"number"}
             {...register("groupId", { required: true })}
-            placeholder="Введите номер группы"
+            placeholder="118"
             className={styles["input"]}
           />
           {errors.id && (
             <span className={styles.error}>Это поле обязательно</span>
           )}
+          <label>Измените код группы</label>
           <input
             {...register("name", { required: true })}
-            placeholder="Введите название группы"
+            placeholder="БOЮ15-РПИ2101"
             className={styles["input"]}
           />
           {errors.name && (
             <span className={styles["error"]}>Это поле обязательно</span>
           )}
+          <label>Измените количество студентов</label>
           <input
             type={"number"}
             {...register("capacity", { required: true })}
-            placeholder="Введите количество студентов"
+            placeholder="13"
             className={styles["input"]}
           />
           {errors.capacity && (

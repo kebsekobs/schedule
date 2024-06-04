@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useClassroomByIdQuery } from "../api/getClassroomById";
 import { useEditClassroomMutation } from "../api/editClassroomMutation";
-import styles from "../../groups/modals/modal.module.css";
+import styles from "../../shared/style/modal.module.css";
 import Button from "../../../components/button";
 
 const EditGroupModal = ({ isOpen, toggleModal, id }) => {
@@ -23,7 +23,6 @@ const EditGroupModal = ({ isOpen, toggleModal, id }) => {
 
   const editClassroomMutation = useEditClassroomMutation();
   const onSubmit = (data) => {
-    data.id = id;
     editClassroomMutation.mutateAsync(data);
     toggleModal();
     reset();
@@ -32,6 +31,7 @@ const EditGroupModal = ({ isOpen, toggleModal, id }) => {
   useEffect(() => {
     if (classroomByIdQuery.data) {
       reset({
+        id: classroomByIdQuery.data.id,
         classroomId: classroomByIdQuery.data.classroomId,
         capacity: classroomByIdQuery.data.capacity,
       });
@@ -69,18 +69,20 @@ const EditGroupModal = ({ isOpen, toggleModal, id }) => {
           onSubmit={handleSubmit(onSubmit)}
           className={styles["groups-form"]}
         >
+          <label>Измените аудиторию</label>
           <input
             {...register("classroomId", { required: true })}
-            placeholder="Введите аудиторию"
+            placeholder="103(б)"
             className={styles["input"]}
           />
           {errors.id && (
             <span className={styles.error}>Это поле обязательно</span>
           )}
+          <label>Измените вместимость аудитории</label>
           <input
             type={"number"}
             {...register("capacity", { required: true })}
-            placeholder="Введите вместимость аудитории"
+            placeholder="36"
             className={styles["input"]}
           />
           {errors.capacity && (

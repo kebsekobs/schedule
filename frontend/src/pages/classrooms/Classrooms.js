@@ -7,7 +7,6 @@ import Button from "../../components/button";
 const Classrooms = () => {
   const getClassroomsQuery = useClassroomsQuery();
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
-
   const toggleAddModal = () => {
     setIsAddModalOpen(!isAddModalOpen);
   };

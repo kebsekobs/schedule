@@ -1,7 +1,7 @@
 import React from "react";
 import { useForm } from "react-hook-form";
 import { useAddClassroomMutation } from "../api/addClassroomMutation";
-import styles from "../../groups/modals/modal.module.css";
+import styles from "../../shared/style/modal.module.css";
 import Button from "../../../components/button";
 
 const AddClassroomModal = ({ isOpen, toggleModal }) => {
@@ -15,7 +15,6 @@ const AddClassroomModal = ({ isOpen, toggleModal }) => {
 
   const addClassroomMutation = useAddClassroomMutation();
   const onSubmit = (data) => {
-    console.log(data);
     addClassroomMutation.mutateAsync(data);
     toggleModal();
     reset();
@@ -47,18 +46,20 @@ const AddClassroomModal = ({ isOpen, toggleModal }) => {
           onSubmit={handleSubmit(onSubmit)}
           className={styles["groups-form"]}
         >
+          <label>Введите аудиторию</label>
           <input
             {...register("classroomId", { required: true })}
-            placeholder="Введите аудиторию"
+            placeholder="103(б)"
             className={styles["input"]}
           />
           {errors.inputId && (
             <span className={styles["error"]}>Это поле обязательно</span>
           )}
+          <label>Введите вместимость аудитории</label>
           <input
             type={"number"}
             {...register("capacity", { required: true })}
-            placeholder="Введите вместимость аудитории"
+            placeholder="46"
             className={styles["input"]}
           />
           {errors.inputCapacity && (

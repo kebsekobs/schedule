@@ -5,8 +5,8 @@
 }
 
 :root {
-  --main-color: #8090BC;
-  --background-color: #F7F9FF;
+  --main-color: #8090bc;
+  --background-color: #f7f9ff;
   --warning-color: #c83044;
 }
 
@@ -16,4 +16,13 @@ body {
 
 h2 {
   background-color: var(--background-color);
+}
+
+.optionContainer > li {
+  background: white;
+  color: black;
+}
+.option:hover {
+  background-color: rgb(226, 232, 249) !important;
+  color: black !important;
 }
