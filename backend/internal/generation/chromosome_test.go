@@ -91,7 +91,7 @@ func TestInit(t *testing.T) {
 		},
 	}
 
-	test.chromosome.TimeTable = &generation.TimeTable{
+	test.chromosome.TimeTable = generation.TimeTable{
 		Hours: 5,
 		Days:  10,
 		Classes: []*generation.Class{
@@ -151,7 +151,7 @@ func TestInit(t *testing.T) {
 		// 	fmt.Println()
 
 		// }
-		generation.SaveXLSX(test.chromosome)
+		// generation.SaveXLSX(test.chromosome)
 		fmt.Println(test.chromosome.Fitness)
 	})
 }

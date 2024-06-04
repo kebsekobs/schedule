@@ -1,6 +1,6 @@
 package generation
 
 type Slot struct {
-	Classes []*Class
+	Classes []Class
 	I       int // итератор
 }

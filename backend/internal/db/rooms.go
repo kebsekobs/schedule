@@ -17,11 +17,12 @@ func DeleteRoom(id int, db *sql.DB) error {
 }
 
 func InsertRooms(db *sql.DB, rooms []*generation.Room) error {
-	query := "INSERT INTO auditoriums (name, capacity) VALUES "
+	query := "INSERT INTO rooms (id, capacity) VALUES "
 	for range rooms {
 		query += "(?, ?),"
 	}
 	query = query[:len(query)-1] // Remove the trailing comma
+	query += " ON DUPLICATE KEY UPDATE capacity = VALUES(capacity)"
 
 	stmt, err := db.Prepare(query)
 	if err != nil {
@@ -40,4 +41,26 @@ func InsertRooms(db *sql.DB, rooms []*generation.Room) error {
 	}
 
 	return nil
+}
+
+func SelectRooms(db *sql.DB) ([]*generation.Room, error) {
+	var rooms []*generation.Room
+
+	rows, err := db.Query("SELECT id, capacity FROM rooms")
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		var id string
+		var capacity int
+		if err := rows.Scan(&id, &capacity); err != nil {
+			return nil, err
+		}
+
+		rooms = append(rooms, &generation.Room{ID: id, Capacity: capacity})
+	}
+
+	return rooms, nil
 }

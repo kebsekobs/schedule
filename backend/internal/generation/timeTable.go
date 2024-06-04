@@ -37,21 +37,22 @@ func (t *TimeTable) fillSlots(group *Group, class *Class) {
 
 	if slots, ok := t.GroupSlots[group.ID]; !ok {
 		t.GroupSlots[group.ID] = &Slot{
-			Classes: make([]*Class, t.Hours*t.Days),
+			Classes: make([]Class, t.Hours*t.Days),
 		}
 	} else if len(slots.Classes) == 0 {
-		t.GroupSlots[group.ID].Classes = make([]*Class, t.Days*t.Hours)
+		t.GroupSlots[group.ID].Classes = make([]Class, t.Days*t.Hours)
 	}
 
 	// suppose java has to be taught for 5 Hours then we make 5
 	// slots for java, we keep track through hourcount
 	for {
+
 		if t.Hours*t.Days <= t.GroupSlots[group.ID].I {
 			log.Printf("У группы %v не осталось свободных слотов для пар", group.ID)
 			break
 		}
 		localClass := *class
-		t.GroupSlots[group.ID].Classes[t.GroupSlots[group.ID].I] = &localClass
+		t.GroupSlots[group.ID].Classes[t.GroupSlots[group.ID].I] = localClass
 		t.GroupSlots[group.ID].I++
 		if hourCount < class.Hours {
 			hourCount++

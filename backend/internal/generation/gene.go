@@ -6,10 +6,18 @@ import (
 
 // Gene представляет собой последовательность выбора слотов для одной группы
 type Gene struct {
+	GroupID     string
 	Slots       []*GeneSlot
 	Flags       []bool // true == занято
 	Hours, Days int
+	Point       int
 }
+
+type ByPoint []*Gene
+
+func (a ByPoint) Len() int           { return len(a) }
+func (a ByPoint) Less(i, j int) bool { return a[i].Point > a[j].Point }
+func (a ByPoint) Swap(i, j int)      { a[i], a[j] = a[j], a[i] }
 
 type GeneSlot struct {
 	Value int
