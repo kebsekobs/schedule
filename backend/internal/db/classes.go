@@ -7,8 +7,46 @@ import (
 
 	_ "github.com/go-sql-driver/mysql"
 
+	api "github.com/kebsekobs/schedule/backend/internal/apientity"
 	"github.com/kebsekobs/schedule/backend/internal/generation"
 )
+
+// CRUD методы для таблицы "classes"
+func GetClasses(db *sql.DB) ([]*api.Discipline, error) {
+	query := "SELECT id, name, groupid, teacherid, hours, streamid FROM classes"
+	rows, err := db.Query(query)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var classes []*api.Discipline
+	for rows.Next() {
+		var class api.Discipline
+		err := rows.Scan(&class.ID, &class.Name, &class.GroupID, &class.Teachers, &class.Hours, &class.StreamID)
+		if err != nil {
+			return nil, err
+		}
+		classes = append(classes, class)
+	}
+	return classes, nil
+}
+
+func UpdateClassName(db *sql.DB, id int, newName string) {
+	query := "UPDATE classes SET name = ? WHERE id = ?"
+	_, err := db.Exec(query, newName, id)
+	if err != nil {
+		panic(err.Error())
+	}
+}
+
+func DeleteClass(db *sql.DB, id int) {
+	query := "DELETE FROM classes WHERE id = ?"
+	_, err := db.Exec(query, id)
+	if err != nil {
+		panic(err.Error())
+	}
+}
 
 func InsertClasses(db *sql.DB, classes map[int]*generation.Class) error {
 	query := "INSERT INTO classes (id, name, groupid, teacherid, hours, streamid) VALUES "
