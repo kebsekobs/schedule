@@ -11,6 +11,7 @@ import (
 
 	_ "github.com/go-sql-driver/mysql"
 
+	api "github.com/kebsekobs/schedule/backend/internal/apientity"
 	"github.com/kebsekobs/schedule/backend/internal/config"
 	"github.com/kebsekobs/schedule/backend/internal/db"
 	"github.com/kebsekobs/schedule/backend/internal/generation"
@@ -42,7 +43,7 @@ func homePage(w http.ResponseWriter, r *http.Request) {
 }
 
 func parseData(w http.ResponseWriter, r *http.Request) {
-	var resp Response
+	var resp api.Response
 	w.Header().Set("Content-Type", "application/json")
 
 	// парсинг аудиторий из rooms.xlsx
@@ -165,7 +166,7 @@ func parseData(w http.ResponseWriter, r *http.Request) {
 }
 
 func generate(w http.ResponseWriter, r *http.Request) {
-	var resp Response
+	var resp api.Response
 
 	rooms, err := db.SelectRooms(_db)
 	if err != nil {
@@ -270,32 +271,52 @@ func generate(w http.ResponseWriter, r *http.Request) {
 func getGroups(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	// Implement group get logic here
-
+	groups, err := db.GetGroups(_db)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
 	json.NewEncoder(w).Encode(groups)
+	w.WriteHeader(http.StatusOK)
 }
 
 func updateGroup(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
-	groupID := r.URL.Path[len("/groups/"):]
-	var newGroup Group
+	// groupID := r.URL.Path[len("/groups/"):]
+	var newGroup api.Group
 	err := json.NewDecoder(r.Body).Decode(&newGroup)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
 	// Implement group update logic here
+	err = db.UpdateGroup(_db, newGroup)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
 	w.WriteHeader(http.StatusOK)
 }
 
 func deleteGroup(w http.ResponseWriter, r *http.Request) {
-	groupID := r.URL.Path[len("/groups/"):]
-
+	// groupID := r.URL.Path[len("/groups/"):]
+	var newGroup api.Group
+	err := json.NewDecoder(r.Body).Decode(&newGroup)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
 	// Implement group deletion logic here
+	err = db.DeleteGroup(_db, newGroup.ID)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
 	w.WriteHeader(http.StatusOK)
 }
 
 func addGroup(w http.ResponseWriter, r *http.Request) {
-	var newGroup Group
+	var newGroup api.Group
 	err := json.NewDecoder(r.Body).Decode(&newGroup)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
@@ -303,6 +324,11 @@ func addGroup(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Implement group add logic here
+	err = db.CreateGroup(_db, newGroup)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
 	w.WriteHeader(http.StatusOK)
 }
 
@@ -310,19 +336,36 @@ func addGroup(w http.ResponseWriter, r *http.Request) {
 
 func getTeachers(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
+	teachers, err := db.GetTeachers(_db)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
 	json.NewEncoder(w).Encode(teachers)
+	w.WriteHeader(http.StatusOK)
 }
 
 func getTeacherByID(w http.ResponseWriter, r *http.Request) {
-	teacherID := r.URL.Path[len("/teachers/"):]
-
-	// Implement teacher get logic here
-	http.Error(w, "Teacher not found", http.StatusNotFound)
+	// teacherID := r.URL.Path[len("/teachers/"):]
+	var selectedTeacher api.Teacher
+	err := json.NewDecoder(r.Body).Decode(&selectedTeacher)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+	w.Header().Set("Content-Type", "application/json")
+	teacher, err := db.GetTeacherByID(_db, selectedTeacher.ID)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+	json.NewEncoder(w).Encode(teacher)
+	w.WriteHeader(http.StatusOK)
 }
 
 func updateTeacher(w http.ResponseWriter, r *http.Request) {
-	teacherID := r.URL.Path[len("/teachers/"):]
-	var updatedTeacher Teacher
+	// teacherID := r.URL.Path[len("/teachers/"):]
+	var updatedTeacher api.Teacher
 	err := json.NewDecoder(r.Body).Decode(&updatedTeacher)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
@@ -330,12 +373,17 @@ func updateTeacher(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Update the teacher
+	err = db.UpdateTeacher(_db, updatedTeacher)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+	w.WriteHeader(http.StatusOK)
 
-	http.Error(w, "Teacher not found", http.StatusNotFound)
 }
 
 func addTeacher(w http.ResponseWriter, r *http.Request) {
-	var newTeacher Teacher
+	var newTeacher api.Teacher
 	err := json.NewDecoder(r.Body).Decode(&newTeacher)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
@@ -343,56 +391,93 @@ func addTeacher(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Assign a unique ID to the new teacher
-	w.Header().Set("Content-Type", "application/json")
+	err = db.CreateTeacher(_db, newTeacher)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
 	w.WriteHeader(http.StatusOK)
-	json.NewEncoder(w).Encode(newTeacher)
 }
 
 func deleteTeacher(w http.ResponseWriter, r *http.Request) {
-	teacherID := r.URL.Path[len("/teachers/"):]
-	// Remove the teacher
+	var newTeacher api.Teacher
+	err := json.NewDecoder(r.Body).Decode(&newTeacher)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
 
-	http.Error(w, "Teacher not found", http.StatusNotFound)
+	// Assign a unique ID to the new teacher
+	err = db.DeleteTeacher(_db, newTeacher.ID)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+	w.WriteHeader(http.StatusOK)
 }
 
 // АУДИТОРИИ
 
 func getClassrooms(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(classrooms)
+	rooms, err := db.GetRooms(_db)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+	json.NewEncoder(w).Encode(rooms)
+	w.WriteHeader(http.StatusOK)
 }
 
 func updateClassroom(w http.ResponseWriter, r *http.Request) {
-	classroomID := r.URL.Path[len("/classrooms/"):]
-	var updatedClassroom Classroom
-	err := json.NewDecoder(r.Body).Decode(&updatedClassroom)
+	var updatedRoom api.Classroom
+	err := json.NewDecoder(r.Body).Decode(&updatedRoom)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
 
-	// Update the classroom
-
-	http.Error(w, "Classroom not found", http.StatusNotFound)
+	// Update the teacher
+	err = db.UpdateRoom(_db, updatedRoom)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+	w.WriteHeader(http.StatusOK)
 }
 
 func deleteClassroom(w http.ResponseWriter, r *http.Request) {
-	classroomID := r.URL.Path[len("/classrooms/"):]
-	// Remove the classroom
-
-	http.Error(w, "Classroom not found", http.StatusNotFound)
-}
-
-func addClassroom(w http.ResponseWriter, r *http.Request) {
-	var newClassroom Classroom
-	err := json.NewDecoder(r.Body).Decode(&newClassroom)
+	var newRoom api.Classroom
+	err := json.NewDecoder(r.Body).Decode(&newRoom)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(http.StatusCreated)
-	json.NewEncoder(w).Encode(newClassroom)
+
+	// Assign a unique ID to the new teacher
+	err = db.DeleteRoom(_db, newRoom.ID)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+	w.WriteHeader(http.StatusOK)
+}
+
+func addClassroom(w http.ResponseWriter, r *http.Request) {
+	var newRoom api.Classroom
+	err := json.NewDecoder(r.Body).Decode(&newRoom)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	// Assign a unique ID to the new teacher
+	err = db.CreateRoom(_db, newRoom)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+	w.WriteHeader(http.StatusOK)
 }
 
 // ПАРЫ

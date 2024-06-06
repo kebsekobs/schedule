@@ -32,9 +32,42 @@ func GetClasses(db *sql.DB) ([]*api.Discipline, error) {
 	return classes, nil
 }
 
-func UpdateClassName(db *sql.DB, id int, newName string) {
+func UpdateClass(db *sql.DB, class *api.Discipline) {
+	if class.DisciplinesId != 0 {
+		deleteClassByStreamId(db, class.DisciplinesId)
+	}
+	classes := make(map[int]*generation.Class)
+	if len(class.RelatedGroupsId) == 1 {
+		classes[class.ID] = &generation.Class{
+			ID: 0,
+			Teacher: &generation.Teacher{
+				ID: id,
+			},
+			Group: &generation.Group{
+				ID: class.RelatedGroupsId[0],
+			},
+			Name: class.Name,
+			Hours: class.Hours,
+		}
+	} else {
+		for _, group := range class.RelatedGroupsId {
+			class[]
+		}	
+	}
+	for _, group := range class.RelatedGroupsId {
+		class[]
+	}
+	InsertClasses(db, classes)
 	query := "UPDATE classes SET name = ? WHERE id = ?"
 	_, err := db.Exec(query, newName, id)
+	if err != nil {
+		panic(err.Error())
+	}
+}
+
+func deleteClassByStreamId(db *sql.DB, streamid int) {
+	query := "DELETE FROM classes WHERE streamid = ?"
+	_, err := db.Exec(query, streamid)
 	if err != nil {
 		panic(err.Error())
 	}

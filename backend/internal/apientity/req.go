@@ -9,7 +9,7 @@ type Group struct {
 }
 
 type Teacher struct {
-	ID       string `json:"id"`
+	ID       int    `json:"id"`
 	Name     string `json:"name"`
 	Initials string `json:"initials"`
 }
@@ -21,8 +21,8 @@ type Classroom struct {
 }
 
 type Discipline struct {
-	ID              string   `json:"id"`
-	DisciplinesId   string   `json:"disciplinesId"`
+	ID              int      `json:"id"`
+	DisciplinesId   int      `json:"disciplinesId"`
 	Name            string   `json:"name"`
 	Teachers        string   `json:"teachers"`
 	Hours           int      `json:"hours"`

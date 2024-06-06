@@ -4,12 +4,52 @@ import (
 	"database/sql"
 
 	_ "github.com/go-sql-driver/mysql"
+	api "github.com/kebsekobs/schedule/backend/internal/apientity"
 	"github.com/kebsekobs/schedule/backend/internal/generation"
 )
 
-func DeleteGroup(id int, db *sql.DB) error {
-	_, err := db.Exec("DELETE FROM schedule.groups WHERE id=?",
-		id)
+// CRUD методы для таблицы "groups"
+func CreateGroup(db *sql.DB, group api.Group) error {
+	query := "INSERT INTO groups (id, name, quantity) VALUES (?, ?, ?)"
+	query += " ON DUPLICATE KEY UPDATE name, quantity = VALUES(name, quantity)"
+	_, err := db.Exec(query, group.ID, group.Name, group.Capacity)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func GetGroups(db *sql.DB) ([]api.Group, error) {
+	query := "SELECT id, name, quantity FROM groups"
+	rows, err := db.Query(query)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var groups []api.Group
+	for rows.Next() {
+		var group api.Group
+		err := rows.Scan(&group.ID, &group.Name, &group.Capacity)
+		if err != nil {
+			return nil, err
+		}
+		groups = append(groups, group)
+	}
+	return groups, nil
+}
+
+func UpdateGroup(db *sql.DB, group api.Group) error {
+	query := "UPDATE groups SET name = ?, quantity = ? WHERE id = ?"
+	_, err := db.Exec(query, group.Name, group.Capacity, group.ID)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func DeleteGroup(db *sql.DB, id string) error {
+	_, err := db.Exec("DELETE FROM schedule.groups WHERE id=?", id)
 	if err != nil {
 		return err
 	}
