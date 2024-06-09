@@ -66,7 +66,7 @@ const AddDisciplinesModal = ({ isOpen, toggleModal }) => {
           />
           <input
               {...register("hours", { required: true })}
-              placeholder="Введите количество часов в неделю"
+              placeholder="Введите количество часов за 2 недели"
               className={styles["input"]}
           />
           <select {...register("teachers", { required: true })}
