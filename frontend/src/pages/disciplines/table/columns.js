@@ -6,17 +6,6 @@ const {accessor, group} = createColumnHelper();
 
 export const columns = [
     group({
-        id: '@disciplinesId',
-        header: 'Id',
-        columns: [
-            accessor('disciplinesId', {
-                header: '',
-                size: 400,
-                cell: data =><div style={{ textAlign: 'center'}}>{data.getValue()}</div>,
-            })
-        ]
-    }),
-    group({
         id: '@name',
         header: 'Дисциплина',
         columns: [
@@ -40,7 +29,7 @@ export const columns = [
     }),
     group({
         id: '@hours',
-        header: 'Часы/нед',
+        header: 'Часы/2нед',
         columns: [
             accessor('hours', {
                 header: '',

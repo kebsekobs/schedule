@@ -5,11 +5,14 @@ import { useGroupByIdQuery } from "../api/getGroupById";
 import { useEditGroupMutation } from "../api/EditGroupMutation";
 import styles from "../../shared/style/modal.module.css";
 import Button from "../../../components/button";
+import {CloseSvg} from "../../../components/close-svg";
+import {useGroupsQuery} from "../api/getGroupsQuery";
 
 const EditGroupModal = ({ isOpen, toggleModal, id }) => {
   const groupByIdQuery = useGroupByIdQuery(id);
   const [isDataLoaded, setIsDataLoaded] = useState(false); // Состояние для отслеживания загрузки данных
-
+  const groupsQuery = useGroupsQuery();
+  const existingGroupIds = groupsQuery.data?.map(group => group.id) ?? []
   const {
     register,
     handleSubmit,
@@ -18,7 +21,7 @@ const EditGroupModal = ({ isOpen, toggleModal, id }) => {
   } = useForm({
     defaultValues: {
       groupId: "",
-      name: "",
+      id: "",
       capacity: "",
       magistracy: false,
     },
@@ -26,7 +29,6 @@ const EditGroupModal = ({ isOpen, toggleModal, id }) => {
 
   const editGroupMutation = useEditGroupMutation();
   const onSubmit = (data) => {
-    data.id = id;
     editGroupMutation.mutateAsync(data);
     toggleModal();
     reset();
@@ -36,11 +38,11 @@ const EditGroupModal = ({ isOpen, toggleModal, id }) => {
     if (groupByIdQuery.data) {
       reset({
         groupId: groupByIdQuery.data.groupId,
-        name: groupByIdQuery.data.name,
+        id: groupByIdQuery.data.id,
         capacity: groupByIdQuery.data.capacity,
         magistracy: groupByIdQuery.data.magistracy || false,
       });
-      setIsDataLoaded(true); // Помечаем данные как загруженные
+      setIsDataLoaded(true);
     }
   }, [groupByIdQuery.data, reset]);
 
@@ -48,76 +50,74 @@ const EditGroupModal = ({ isOpen, toggleModal, id }) => {
     return null;
   }
 
-  // Рендерим загрузку, если данные еще не загружены
+
   if (!isDataLoaded) {
     return <div>Loading...</div>;
   }
 
   return (
-    <div className={styles["backdrop"]}>
-      <div className={styles["modal"]}>
-        <div className={styles["modal-header"]}>
-          <h2>Измените данные</h2>
-          <Button onClick={toggleModal} styleFeature="close">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              x="0px"
-              y="0px"
-              width="20"
-              height="20"
-              viewBox="0 0 30 30"
-            >
-              <path d="M 7 4 C 6.744125 4 6.4879687 4.0974687 6.2929688 4.2929688 L 4.2929688 6.2929688 C 3.9019687 6.6839688 3.9019687 7.3170313 4.2929688 7.7070312 L 11.585938 15 L 4.2929688 22.292969 C 3.9019687 22.683969 3.9019687 23.317031 4.2929688 23.707031 L 6.2929688 25.707031 C 6.6839688 26.098031 7.3170313 26.098031 7.7070312 25.707031 L 15 18.414062 L 22.292969 25.707031 C 22.682969 26.098031 23.317031 26.098031 23.707031 25.707031 L 25.707031 23.707031 C 26.098031 23.316031 26.098031 22.682969 25.707031 22.292969 L 18.414062 15 L 25.707031 7.7070312 C 26.098031 7.3170312 26.098031 6.6829688 25.707031 6.2929688 L 23.707031 4.2929688 C 23.316031 3.9019687 22.682969 3.9019687 22.292969 4.2929688 L 15 11.585938 L 7.7070312 4.2929688 C 7.5115312 4.0974687 7.255875 4 7 4 z"></path>
-            </svg>
-          </Button>
-        </div>
-        <form
-          onSubmit={handleSubmit(onSubmit)}
-          className={styles["groups-form"]}
-        >
-          <label>Измените степень</label>
-          <label htmlFor="magistracy" className={styles.label}>
+      <div className={styles["backdrop"]}>
+        <div className={styles["modal"]}>
+          <div className={styles["modal-header"]}>
+            <h2>Введите данные</h2>
+            <Button onClick={toggleModal} styleFeature="close">
+              <CloseSvg />
+            </Button>
+          </div>
+          <form
+              onSubmit={handleSubmit(onSubmit)}
+              className={styles["groups-form"]}
+          >
+            <label>Укажите степень</label>
+            <label htmlFor="consent" className={styles["label"]}>
+              <input
+                  type="checkbox"
+                  id="magistracy"
+                  className={styles["checkbox"]}
+                  {...register("magistracy")}
+              />
+              Магистратура
+            </label>
+            <label>Введите номер группы</label>
             <input
-              type="checkbox"
-              id="magistracy"
-              {...register("magistracy")}
-              className={styles["checkbox"]}
+                type="number"
+                {...register("groupId", { required: true })}
+                placeholder="118"
+                className={styles["input"]}
             />
-            Магистратура
-          </label>
-          <label>Измените номер группы</label>
-          <input
-            type={"number"}
-            {...register("groupId", { required: true })}
-            placeholder="118"
-            className={styles["input"]}
-          />
-          {errors.id && (
-            <span className={styles.error}>Это поле обязательно</span>
-          )}
-          <label>Измените код группы</label>
-          <input
-            {...register("name", { required: true })}
-            placeholder="БOЮ15-РПИ2101"
-            className={styles["input"]}
-          />
-          {errors.name && (
-            <span className={styles["error"]}>Это поле обязательно</span>
-          )}
-          <label>Измените количество студентов</label>
-          <input
-            type={"number"}
-            {...register("capacity", { required: true })}
-            placeholder="13"
-            className={styles["input"]}
-          />
-          {errors.capacity && (
-            <span className={styles.error}>Это поле обязательно</span>
-          )}
-          <Button type="submit">Oтправить</Button>
-        </form>
+            {errors.groupId && (
+                <span className={styles["error"]}>Это поле обязательно</span>
+            )}
+            <label>Введите код группы</label>
+            <input
+                {...register("id", {
+                  required: "Это поле обязательно",
+                  validate: value => !existingGroupIds.includes(value) || "Такой ID уже существует"
+                })}
+                placeholder="БOЮ15-РПИ2101"
+                className={styles["input"]}
+            />
+            {errors.id && (
+                <span className={styles["error"]}>{errors.id.message}</span>
+            )}
+            <label>Введите количество студентов</label>
+            <input
+                type="number"
+                {...register("capacity", { required: true, min: 1 })}
+                placeholder="13"
+                className={styles["input"]}
+            />
+            {errors.capacity && (
+                <span className={styles["error"]}>
+              {errors.capacity.type === "required"
+                  ? "Это поле обязательно"
+                  : "Значение должно быть больше 0"}
+            </span>
+            )}
+            <Button type="submit">Отправить</Button>
+          </form>
+        </div>
       </div>
-    </div>
   );
 };
 

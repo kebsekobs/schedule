@@ -18,20 +18,7 @@ export const columns = [
     ],
   }),
   group({
-    id: "@initials",
-    header: "Инициалы",
-    columns: [
-      accessor("initials", {
-        header: "",
-        size: 100,
-        cell: (data) => (
-          <div style={{ textAlign: "center" }}>{data.getValue()}</div>
-        ),
-      }),
-    ],
-  }),
-  group({
-    id: "@capacity",
+    id: "@editCell",
     header: "",
     columns: [
       accessor("capacity", {
