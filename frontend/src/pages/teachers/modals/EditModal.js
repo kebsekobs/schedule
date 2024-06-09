@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useTeacherByIdQuery } from "../api/getTeacherById";
 import { useEditTeacherMutation } from "../api/EditTeacherMutation";
-import styles from "../../groups/modals/modal.module.css";
+import styles from "../../shared/style/modal.module.css";
 import Button from "../../../components/button";
 
 const EditGroupModal = ({ isOpen, toggleModal, id }) => {
@@ -68,17 +68,19 @@ const EditGroupModal = ({ isOpen, toggleModal, id }) => {
           onSubmit={handleSubmit(onSubmit)}
           className={styles["groups-form"]}
         >
+          <label>Измените ФИО</label>
           <input
             {...register("name", { required: true })}
-            placeholder="Измените ФИО (Иванов И.И.)"
+            placeholder="Иванов И.И."
             className={styles["input"]}
           />
           {errors.name && (
             <span className={styles["error"]}>Это поле обязательно</span>
           )}
+          <label>Измените инициалы</label>
           <input
             {...register("initials", { required: true })}
-            placeholder="Измените инициалы (И.И.)"
+            placeholder="И.И."
             className={styles["input"]}
           />
           {errors.capacity && (

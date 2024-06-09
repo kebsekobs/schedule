@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
-import styles from "../../groups/modals/modal.module.css";
+import { useForm, Controller } from "react-hook-form";
+import styles from "../../shared/style/modal.module.css";
 import Button from "../../../components/button";
-import {useEditDisciplinesMutation} from "../api/editDisciplinesMutation";
-import {useDisciplinesByIdQuery} from "../api/geDisciplinesById";
-import {useGroupsQuery} from "../../groups/api/getGroupsQuery";
-import {useTeachersQuery} from "../../teachers/api/getTeachersQuery";
+import { useEditDisciplinesMutation } from "../api/editDisciplinesMutation";
+import { useDisciplinesByIdQuery } from "../api/geDisciplinesById";
+import { useGroupsQuery } from "../../groups/api/getGroupsQuery";
+import { useTeachersQuery } from "../../teachers/api/getTeachersQuery";
+import { Multiselect } from "multiselect-react-dropdown";
 
 const EditDisciplinesModal = ({ isOpen, toggleModal, id }) => {
   const disciplinesByIdQuery = useDisciplinesByIdQuery(id);
@@ -13,6 +14,7 @@ const EditDisciplinesModal = ({ isOpen, toggleModal, id }) => {
 
   const {
     register,
+    control,
     handleSubmit,
     formState: { errors },
     reset,
@@ -26,6 +28,8 @@ const EditDisciplinesModal = ({ isOpen, toggleModal, id }) => {
   const editDisciplinesMutation = useEditDisciplinesMutation();
   const getGroup = useGroupsQuery().data;
   const teachersQuery = useTeachersQuery();
+
+  const options = getGroup?.map((el) => `${el.groupId} ${el.id}`);
 
   const onSubmit = (data) => {
     data.id = id;
@@ -41,7 +45,7 @@ const EditDisciplinesModal = ({ isOpen, toggleModal, id }) => {
         name: disciplinesByIdQuery.data.name,
         teachers: disciplinesByIdQuery.data.teachers,
         hours: disciplinesByIdQuery.data.hours,
-        relatedGroupsId: disciplinesByIdQuery.data.relatedGroupsId
+        relatedGroupsId: disciplinesByIdQuery.data.relatedGroupsId,
       });
       setIsDataLoaded(true);
     }
@@ -54,10 +58,22 @@ const EditDisciplinesModal = ({ isOpen, toggleModal, id }) => {
   if (!isDataLoaded) {
     return <div>Loading...</div>;
   }
-  function getRelatedGroup(data,id){
-    return data.relatedGroupsId.includes(id)
-  }
 
+  const multiSelectStyles = {
+    multiselectContainer: {
+      backgroundColor: "white",
+    },
+    inputField: {
+      margin: "5px",
+    },
+    chips: {
+      background: "#8090bc",
+    },
+    optionContainer: {
+      maxHeight: "160px",
+      overflowY: "scroll",
+    },
+  };
 
   return (
     <div className={styles["backdrop"]}>
@@ -81,38 +97,59 @@ const EditDisciplinesModal = ({ isOpen, toggleModal, id }) => {
           onSubmit={handleSubmit(onSubmit)}
           className={styles["groups-form"]}
         >
+          <label>Измените id дисциплины</label>
           <input
             {...register("disciplinesId", { required: true })}
-            placeholder="Введите id дисциплины"
+            placeholder="A41E"
             className={styles["input"]}
           />
           {errors.id && (
             <span className={styles.error}>Это поле обязательно</span>
           )}
+          <label>Измените имя дисциплины</label>
           <input
             {...register("name", { required: true })}
-            placeholder="Введите имя дисциплины"
+            placeholder="Ин.яз"
             className={styles["input"]}
           />
+          <label>Измените кол-во часов в неделю</label>
           <input
-              {...register("hours", { required: true })}
-              placeholder="Введите количество часов за 2 недели"
-              className={styles["input"]}
+            {...register("hours", { required: true })}
+            placeholder="20"
+            className={styles["input"]}
           />
-          <select {...register("teachers", { required: true })}
-                  className={styles["input"]}
+          <label>Измените преподователя</label>
+          <select
+            {...register("teachers", { required: true })}
+            className={styles["input"]}
           >
             {teachersQuery.data.map((el, index) => (
-                <option  key={index}  value={`${el.id}`}>{`Преподователь: ${el.name}`}</option>
+              <option
+                key={index}
+                value={`${el.id}`}
+              >{`Преподователь: ${el.name}`}</option>
             ))}
           </select>
-          <select {...register("relatedGroupsId")} required multiple
-                  className={styles["input"]}
-          >
-            {getGroup.map((el, index) => (
-                <option  key={index} selected={getRelatedGroup(disciplinesByIdQuery.data, el.id)}  value={`${el.groupId} ${el.id}`}>{`groupId:${el.groupId} Наименование группы${el.name}`}</option>
-            ))}
-          </select>
+          <label>Измените группу(ы)</label>
+          <Controller
+            control={control}
+            name="relatedGroupsId"
+            render={({ field: { value, onChange } }) => (
+              <Multiselect
+                placeholder="314 GTH-JDO-NSK"
+                options={options}
+                isObject={false}
+                showCheckbox={true}
+                hidePlaceholder={true}
+                closeOnSelect={false}
+                onSelect={onChange}
+                onRemove={onChange}
+                selectedValues={value}
+                showArrow={true}
+                style={multiSelectStyles}
+              />
+            )}
+          />
           <Button type="submit">Oтправить</Button>
         </form>
       </div>

@@ -1,7 +1,7 @@
 import React from "react";
 import { useForm } from "react-hook-form";
 import { useAddGroupsMutation } from "../api/AddGroupMutation";
-import styles from "./modal.module.css";
+import styles from "../../shared/style/modal.module.css";
 import Button from "../../../components/button";
 
 const AddGroupModal = ({ isOpen, toggleModal }) => {
@@ -46,6 +46,7 @@ const AddGroupModal = ({ isOpen, toggleModal }) => {
           onSubmit={handleSubmit(onSubmit)}
           className={styles["groups-form"]}
         >
+          <label>Укажите степень</label>
           <label htmlFor="consent" className={styles["label"]}>
             <input
               type="checkbox"
@@ -55,27 +56,30 @@ const AddGroupModal = ({ isOpen, toggleModal }) => {
             />
             Магистратура
           </label>
+          <label>Введите номер группы</label>
           <input
             type={"number"}
             {...register("groupId", { required: true })}
-            placeholder="Введите номер группы"
+            placeholder="118"
             className={styles["input"]}
           />
           {errors.inputId && (
             <span className={styles["error"]}>Это поле обязательно</span>
           )}
+          <label>Введите код группы</label>
           <input
             {...register("name", { required: true })}
-            placeholder="Введите код группы"
+            placeholder="БOЮ15-РПИ2101"
             className={styles["input"]}
           />
           {errors.inputName && (
             <span className={styles["error"]}>Это поле обязательно</span>
           )}
+          <label>Введите количество студентов</label>
           <input
             type={"number"}
             {...register("capacity", { required: true })}
-            placeholder="Введите количество студентов"
+            placeholder="13"
             className={styles["input"]}
           />
           {errors.inputCapacity && (
