@@ -7,7 +7,7 @@ export const service = {
               return axios.post(disciplines_url, config).then(response => response.data);
        },
        deleteDisciplines: function (classroomId, config = {}) {
-              const url = `${disciplines_url}/${classroomId}`;
+              const url = `${disciplines_url}`;
               return axios.delete(url, config)
                   .then(response => response.data);
        },
@@ -16,6 +16,6 @@ export const service = {
               return axios.get(url, config).then(response => response.data);
        },
        editDisciplines: function (data, config = {}) {
-              return axios.put(`${disciplines_url}/${data.id}`, data, config).then(response => response.data);
+              return axios.put(`${disciplines_url}`, data, config).then(response => response.data);
        },
 };
