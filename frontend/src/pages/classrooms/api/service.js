@@ -10,8 +10,8 @@ export const service = {
               return axios.post(classrooms_url, config).then(response => response.data);
        },
        deleteClassroom: function (classroomId, config = {}) {
-              const url = `${classrooms_url}/${classroomId}`;
-              return axios.delete(url, config)
+              const url = `${classrooms_url}`;
+              return axios.delete(url,classroomId, config)
                   .then(response => response.data);
        },
        getClassroomById: function (classroomId, config = {}) {
