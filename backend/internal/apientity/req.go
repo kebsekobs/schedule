@@ -3,7 +3,7 @@ package api
 type Group struct {
 	ID         string `json:"id"`
 	Magistracy bool   `json:"magistracy"`
-	GroupID    string `json:"groupId"`
+	GroupID    int    `json:"groupId"`
 	Name       string `json:"name"`
 	Capacity   string `json:"capacity"`
 }

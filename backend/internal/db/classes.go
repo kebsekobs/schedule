@@ -36,7 +36,6 @@ func GetClasses(db *sql.DB) ([]api.Discipline, error) {
 		return nil, err
 	}
 	defer rows.Close()
-
 	var classes []api.Discipline
 	for rows.Next() {
 		var class api.Discipline
@@ -230,7 +229,14 @@ func getClassByID(classes []*generation.CommonClass, id int) *generation.CommonC
 func getClassesGroupsLinks(db *sql.DB, classID int) ([]string, error) {
 	query := "SELECT groupid FROM classes_groups WHERE classid = ?"
 	var groupIds []string
+	log.Println(1111)
 	rows, err := db.Query(query, classID)
+	if err != nil {
+		log.Println(err)
+		return nil, err
+	}
+	log.Println(2222)
+
 	defer rows.Close()
 	for rows.Next() {
 		var groupId string
@@ -239,11 +245,9 @@ func getClassesGroupsLinks(db *sql.DB, classID int) ([]string, error) {
 			log.Println(err)
 			continue
 		}
-		groupIds = append(groupIds)
+		groupIds = append(groupIds, groupId)
 	}
-	if err != nil {
-		return nil, err
-	}
+
 	return groupIds, nil
 }
 

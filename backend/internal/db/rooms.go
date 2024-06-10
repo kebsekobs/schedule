@@ -30,7 +30,7 @@ func GetRooms(db *sql.DB) ([]api.Classroom, error) {
 	var rooms []api.Classroom
 	for rows.Next() {
 		var room api.Classroom
-		err := rows.Scan(&room.ID, &room.Capacity)
+		err := rows.Scan(&room.ClassroomID, &room.Capacity)
 		if err != nil {
 			return nil, err
 		}

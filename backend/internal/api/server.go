@@ -45,7 +45,6 @@ func homePage(w http.ResponseWriter, r *http.Request) {
 func parseData(w http.ResponseWriter, r *http.Request) {
 	var resp api.Response
 	w.Header().Set("Content-Type", "application/json")
-
 	// парсинг аудиторий из rooms.xlsx
 	rooms, err := generation.ParseRooms()
 	if err != nil {
@@ -270,6 +269,7 @@ func generate(w http.ResponseWriter, r *http.Request) {
 
 func getGroups(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
+	w.Header().Set("Access-Control-Allow-Origin", "*")
 	// Implement group get logic here
 	groups, err := db.GetGroups(_db)
 	if err != nil {
@@ -300,6 +300,7 @@ func updateGroup(w http.ResponseWriter, r *http.Request) {
 
 func deleteGroup(w http.ResponseWriter, r *http.Request) {
 	// groupID := r.URL.Path[len("/groups/"):]
+	w.Header().Set("Access-Control-Allow-Origin", "*")
 	var newGroup api.Group
 	err := json.NewDecoder(r.Body).Decode(&newGroup)
 	if err != nil {
@@ -336,6 +337,7 @@ func addGroup(w http.ResponseWriter, r *http.Request) {
 
 func getTeachers(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
+	w.Header().Set("Access-Control-Allow-Origin", "*")
 	teachers, err := db.GetTeachers(_db)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
@@ -420,6 +422,7 @@ func deleteTeacher(w http.ResponseWriter, r *http.Request) {
 
 func getClassrooms(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
+	w.Header().Set("Access-Control-Allow-Origin", "*")
 	rooms, err := db.GetRooms(_db)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
@@ -484,6 +487,7 @@ func addClassroom(w http.ResponseWriter, r *http.Request) {
 
 func getDisciplines(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
+	w.Header().Set("Access-Control-Allow-Origin", "*")
 	classes, err := db.GetClasses(_db)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
@@ -554,12 +558,6 @@ func RunServer() {
 			getGroups(w, r)
 		case http.MethodPost:
 			addGroup(w, r)
-		default:
-			http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
-		}
-	})
-	http.HandleFunc("/groups/", func(w http.ResponseWriter, r *http.Request) {
-		switch r.Method {
 		case http.MethodPut:
 			updateGroup(w, r)
 		case http.MethodDelete:
@@ -568,6 +566,16 @@ func RunServer() {
 			http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
 		}
 	})
+	// http.HandleFunc("/groups/", func(w http.ResponseWriter, r *http.Request) {
+	// 	switch r.Method {
+	// 	case http.MethodPut:
+	// 		updateGroup(w, r)
+	// 	case http.MethodDelete:
+	// 		deleteGroup(w, r)
+	// 	default:
+	// 		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+	// 	}
+	// })
 	http.HandleFunc("/teachers", func(w http.ResponseWriter, r *http.Request) {
 		switch r.Method {
 		case http.MethodGet:
@@ -631,6 +639,6 @@ func RunServer() {
 		}
 	})
 
-	fmt.Println("Сервер запущен на http://localhost:8080")
-	http.ListenAndServe(":8080", nil)
+	fmt.Println("Сервер запущен на http://localhost:3001")
+	http.ListenAndServe(":3001", nil)
 }

@@ -20,7 +20,7 @@ func CreateGroup(db *sql.DB, group api.Group) error {
 }
 
 func GetGroups(db *sql.DB) ([]api.Group, error) {
-	query := "SELECT id, name, quantity FROM groups"
+	query := "SELECT id,  quantity FROM groups"
 	rows, err := db.Query(query)
 	if err != nil {
 		return nil, err
@@ -30,7 +30,7 @@ func GetGroups(db *sql.DB) ([]api.Group, error) {
 	var groups []api.Group
 	for rows.Next() {
 		var group api.Group
-		err := rows.Scan(&group.ID, &group.Name, &group.Capacity)
+		err := rows.Scan(&group.ID, &group.Capacity)
 		if err != nil {
 			return nil, err
 		}
