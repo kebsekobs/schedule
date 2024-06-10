@@ -41,7 +41,7 @@ func GetRooms(db *sql.DB) ([]api.Classroom, error) {
 
 func UpdateRoom(db *sql.DB, room api.Classroom) error {
 	query := "UPDATE rooms SET capacity = ? WHERE id = ?"
-	_, err := db.Exec(query, room.Capacity, room.ID)
+	_, err := db.Exec(query, room.Capacity, room.ClassroomID)
 	if err != nil {
 		return err
 	}
