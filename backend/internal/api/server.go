@@ -10,6 +10,7 @@ import (
 	"time"
 
 	_ "github.com/go-sql-driver/mysql"
+	"github.com/rs/cors"
 
 	api "github.com/kebsekobs/schedule/backend/internal/apientity"
 	"github.com/kebsekobs/schedule/backend/internal/config"
@@ -433,6 +434,7 @@ func getClassrooms(w http.ResponseWriter, r *http.Request) {
 }
 
 func updateClassroom(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Access-Control-Allow-Origin", "*")
 	var updatedRoom api.Classroom
 	err := json.NewDecoder(r.Body).Decode(&updatedRoom)
 	if err != nil {
@@ -450,6 +452,7 @@ func updateClassroom(w http.ResponseWriter, r *http.Request) {
 }
 
 func deleteClassroom(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Access-Control-Allow-Origin", "*")
 	var newRoom api.Classroom
 	err := json.NewDecoder(r.Body).Decode(&newRoom)
 	if err != nil {
@@ -467,6 +470,7 @@ func deleteClassroom(w http.ResponseWriter, r *http.Request) {
 }
 
 func addClassroom(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Access-Control-Allow-Origin", "*")
 	var newRoom api.Classroom
 	err := json.NewDecoder(r.Body).Decode(&newRoom)
 	if err != nil {
@@ -549,10 +553,12 @@ func addDiscipline(w http.ResponseWriter, r *http.Request) {
 }
 
 func RunServer() {
-	http.HandleFunc("/", homePage)
-	http.HandleFunc("/parsedata", parseData)
-	http.HandleFunc("/generate", generate)
-	http.HandleFunc("/groups", func(w http.ResponseWriter, r *http.Request) {
+	mux := http.NewServeMux()
+
+	mux.HandleFunc("/", homePage)
+	mux.HandleFunc("/parsedata", parseData)
+	mux.HandleFunc("/generate", generate)
+	mux.HandleFunc("/groups", func(w http.ResponseWriter, r *http.Request) {
 		switch r.Method {
 		case http.MethodGet:
 			getGroups(w, r)
@@ -562,31 +568,39 @@ func RunServer() {
 			updateGroup(w, r)
 		case http.MethodDelete:
 			deleteGroup(w, r)
+		case http.MethodOptions:
+			optionsHandler(w, r)
 		default:
 			http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
 		}
 	})
-	// http.HandleFunc("/groups/", func(w http.ResponseWriter, r *http.Request) {
-	// 	switch r.Method {
-	// 	case http.MethodPut:
-	// 		updateGroup(w, r)
-	// 	case http.MethodDelete:
-	// 		deleteGroup(w, r)
-	// 	default:
-	// 		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
-	// 	}
-	// })
-	http.HandleFunc("/teachers", func(w http.ResponseWriter, r *http.Request) {
+	mux.HandleFunc("/groups/", func(w http.ResponseWriter, r *http.Request) {
+		switch r.Method {
+		case http.MethodGet:
+			getGroups(w, r)
+		case http.MethodPut:
+			updateGroup(w, r)
+		case http.MethodDelete:
+			deleteGroup(w, r)
+		case http.MethodOptions:
+			optionsHandler(w, r)
+		default:
+			http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+		}
+	})
+	mux.HandleFunc("/teachers", func(w http.ResponseWriter, r *http.Request) {
 		switch r.Method {
 		case http.MethodGet:
 			getTeachers(w, r)
 		case http.MethodPost:
 			addTeacher(w, r)
+		case http.MethodOptions:
+			optionsHandler(w, r)
 		default:
 			http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
 		}
 	})
-	http.HandleFunc("/teachers/", func(w http.ResponseWriter, r *http.Request) {
+	mux.HandleFunc("/teachers/", func(w http.ResponseWriter, r *http.Request) {
 		switch r.Method {
 		case http.MethodGet:
 			getTeacherByID(w, r)
@@ -594,51 +608,84 @@ func RunServer() {
 			updateTeacher(w, r)
 		case http.MethodDelete:
 			deleteTeacher(w, r)
+		case http.MethodOptions:
+			optionsHandler(w, r)
 		default:
 			http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
 		}
 	})
-	http.HandleFunc("/classrooms", func(w http.ResponseWriter, r *http.Request) {
+	mux.HandleFunc("/classrooms", func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Access-Control-Allow-Origin", "*")
+		w.Header().Set("Access-Control-Allow-Methods", "OPTIONS, GET, POST, PUT, DELETE")
 		switch r.Method {
 		case http.MethodGet:
 			getClassrooms(w, r)
 		case http.MethodPost:
 			addClassroom(w, r)
-		default:
-			http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
-		}
-	})
-	http.HandleFunc("/classrooms/", func(w http.ResponseWriter, r *http.Request) {
-		switch r.Method {
 		case http.MethodPut:
 			updateClassroom(w, r)
 		case http.MethodDelete:
 			deleteClassroom(w, r)
+		case http.MethodOptions:
+			optionsHandler(w, r)
 		default:
 			http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
 		}
 	})
-	http.HandleFunc("/disciplines", func(w http.ResponseWriter, r *http.Request) {
+	mux.HandleFunc("/classrooms/", func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Access-Control-Allow-Origin", "*")
+		w.Header().Set("Access-Control-Allow-Methods", "OPTIONS, GET, POST, PUT, DELETE")
+		switch r.Method {
+		case http.MethodGet:
+			getClassrooms(w, r)
+		case http.MethodPut:
+			updateClassroom(w, r)
+		case http.MethodDelete:
+			deleteClassroom(w, r)
+		case http.MethodOptions:
+			optionsHandler(w, r)
+		default:
+			http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+		}
+	})
+	mux.HandleFunc("/disciplines", func(w http.ResponseWriter, r *http.Request) {
 		switch r.Method {
 		case http.MethodGet:
 			getDisciplines(w, r)
 		case http.MethodPost:
 			addDiscipline(w, r)
+		case http.MethodOptions:
+			optionsHandler(w, r)
 		default:
 			http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
 		}
 	})
-	http.HandleFunc("/disciplines/", func(w http.ResponseWriter, r *http.Request) {
+	mux.HandleFunc("/disciplines/", func(w http.ResponseWriter, r *http.Request) {
 		switch r.Method {
 		case http.MethodPut:
 			updateDiscipline(w, r)
 		case http.MethodDelete:
 			deleteDiscipline(w, r)
+		case http.MethodOptions:
+			optionsHandler(w, r)
 		default:
 			http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
 		}
 	})
 
+	// Настройка CORS
+	c := cors.New(cors.Options{
+		AllowedOrigins: []string{"*"},                                       // Разрешаем все источники
+		AllowedMethods: []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"}, // Разрешаем методы
+	})
+
+	// Обертка для обработчика с CORS
+	handler := c.Handler(mux)
+
 	fmt.Println("Сервер запущен на http://localhost:3001")
-	http.ListenAndServe(":3001", nil)
+	http.ListenAndServe(":3001", handler)
+}
+
+func optionsHandler(w http.ResponseWriter, r *http.Request) {
+	w.WriteHeader(http.StatusOK)
 }

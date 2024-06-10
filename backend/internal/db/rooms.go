@@ -12,7 +12,7 @@ import (
 func CreateRoom(db *sql.DB, room api.Classroom) error {
 	query := "INSERT INTO rooms (id, capacity) VALUES (?, ?)"
 	query += " ON DUPLICATE KEY UPDATE capacity = VALUES(capacity)"
-	_, err := db.Exec(query, room.ID, room.Capacity)
+	_, err := db.Exec(query, room.ClassroomID, room.Capacity)
 	if err != nil {
 		return err
 	}
