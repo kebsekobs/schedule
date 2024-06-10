@@ -4,14 +4,10 @@ import { useAddGroupsMutation } from "../api/AddGroupMutation";
 import styles from "../../shared/style/modal.module.css";
 import Button from "../../../components/button";
 import {CloseSvg} from "../../../components/close-svg";
-import {useGroupsQuery} from "../api/getGroupsQuery";
 
-const AddGroupModal = ({ isOpen, toggleModal }) => {
+const AddGroupModal = ({data, isOpen, toggleModal }) => {
   const form = useForm();
-
-  const groupsQuery = useGroupsQuery();
-  const existingGroupIds = groupsQuery.data?.map(group => group.id) ?? []
-
+  const existingGroupIds = data?.map(group => group.id) ?? []
   const {
     reset,
     register,

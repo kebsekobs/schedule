@@ -1,14 +1,11 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { useForm } from "react-hook-form";
-import { useTeacherByIdQuery } from "../api/getTeacherById";
 import { useEditTeacherMutation } from "../api/EditTeacherMutation";
 import styles from "../../shared/style/modal.module.css";
 import Button from "../../../components/button";
 import {CloseSvg} from "../../../components/close-svg";
 
-const EditGroupModal = ({ isOpen, toggleModal, id }) => {
-  const teacherByIdQuery = useTeacherByIdQuery(id);
-  const [isDataLoaded, setIsDataLoaded] = useState(false);
+const EditGroupModal = ({ original, isOpen, toggleModal, id }) => {
   const {
     register,
     handleSubmit,
@@ -16,8 +13,7 @@ const EditGroupModal = ({ isOpen, toggleModal, id }) => {
     reset,
   } = useForm({
     defaultValues: {
-      name: "",
-      initials: "",
+      name: original.name
     },
   });
 
@@ -29,23 +25,10 @@ const EditGroupModal = ({ isOpen, toggleModal, id }) => {
     reset();
   };
 
-  useEffect(() => {
-    if (teacherByIdQuery.data) {
-      reset({
-        name: teacherByIdQuery.data.name,
-        initials: teacherByIdQuery.data.initials,
-      });
-      setIsDataLoaded(true);
-    }
-  }, [teacherByIdQuery.data, reset]);
-
   if (!isOpen) {
     return null;
   }
-
-  if (!isDataLoaded) {
-    return <div>Loading...</div>;
-  }
+  
 
   return (
     <div className={styles["backdrop"]}>

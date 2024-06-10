@@ -1,18 +1,15 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { useForm, Controller } from "react-hook-form";
 import styles from "../../shared/style/modal.module.css";
 import Button from "../../../components/button";
 import { useEditDisciplinesMutation } from "../api/editDisciplinesMutation";
-import { useDisciplinesByIdQuery } from "../api/geDisciplinesById";
 import { useGroupsQuery } from "../../groups/api/getGroupsQuery";
 import { useTeachersQuery } from "../../teachers/api/getTeachersQuery";
 import { Multiselect } from "multiselect-react-dropdown";
 import {CloseSvg} from "../../../components/close-svg";
 
-const EditDisciplinesModal = ({ isOpen, toggleModal, id }) => {
-  const disciplinesByIdQuery = useDisciplinesByIdQuery(id);
-  const [isDataLoaded, setIsDataLoaded] = useState(false);
-
+const EditDisciplinesModal = ({ isOpen, toggleModal, original }) => {
+  const id = original.id;
   const {
     register,
     control,
@@ -21,8 +18,11 @@ const EditDisciplinesModal = ({ isOpen, toggleModal, id }) => {
     reset,
   } = useForm({
     defaultValues: {
-      classroomId: "",
-      capacity: "",
+      disciplinesId: original.disciplinesId,
+      name: original.name,
+      teachers: original.teachers,
+      hours: original.hours,
+      relatedGroupsId: original.relatedGroupsId,
     },
   });
 
@@ -39,26 +39,10 @@ const EditDisciplinesModal = ({ isOpen, toggleModal, id }) => {
     reset();
   };
 
-  useEffect(() => {
-    if (disciplinesByIdQuery.data) {
-      reset({
-        disciplinesId: disciplinesByIdQuery.data.disciplinesId,
-        name: disciplinesByIdQuery.data.name,
-        teachers: disciplinesByIdQuery.data.teachers,
-        hours: disciplinesByIdQuery.data.hours,
-        relatedGroupsId: disciplinesByIdQuery.data.relatedGroupsId,
-      });
-      setIsDataLoaded(true);
-    }
-  }, [disciplinesByIdQuery.data, reset]);
-
   if (!isOpen) {
     return null;
   }
 
-  if (!isDataLoaded) {
-    return <div>Loading...</div>;
-  }
 
   const multiSelectStyles = {
     multiselectContainer: {

@@ -7,7 +7,7 @@ import styles from '../../shared/style/table.module.css';
 export function EditCell(props) {
   const deleteGroupMutation = useDeleteGroupMutation();
   const id = props.props.original.id;
-
+  const original = props.props.original;
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
 
   const toggleEditModal = () => {
@@ -15,7 +15,7 @@ export function EditCell(props) {
   };
   function deleteGroup() {
     if (window.confirm("Вы уверены, что хотите удалить группу?"))
-      deleteGroupMutation.mutateAsync(id);
+      deleteGroupMutation.mutateAsync({id});
   }
 
   return (
@@ -35,7 +35,7 @@ export function EditCell(props) {
         <EditModal
           toggleModal={toggleEditModal}
           isOpen={isEditModalOpen}
-          id={id}
+          original={original}
         />
       )}
     </div>

@@ -12,9 +12,12 @@ const Disciplines = () => {
     };
     return (
         <div className={'page'}>
-            {getDisciplines.isLoading ? 'Загружаем' : <DisciplinesTable data={getDisciplines.data} />}
-            <Button onClick={toggleAddModal}>Добавить аудиторию</Button>
-            <AddDisciplinesModal toggleModal={toggleAddModal} isOpen={isAddModalOpen}/>
+            {getDisciplines.isLoading ? 'Загружаем' : (
+                <>
+                    <DisciplinesTable data={getDisciplines.data} />
+                    <Button onClick={toggleAddModal}>Добавить аудиторию</Button>
+                    <AddDisciplinesModal toggleModal={toggleAddModal} isOpen={isAddModalOpen}/>
+                </>)}
         </div>
     );
 };

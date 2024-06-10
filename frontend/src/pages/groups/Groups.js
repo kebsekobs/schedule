@@ -17,10 +17,12 @@ const Groups = () => {
         {getGroupsQuery.isLoading ? (
           "Загружаем"
         ) : (
-          <CoursesTable data={getGroupsQuery.data} />
+            <>
+              <CoursesTable data={getGroupsQuery.data} />
+              <Button onClick={toggleAddModal}>Добавить группу</Button>
+              <AddGroupModal data={getGroupsQuery.data} isOpen={isAddModalOpen} toggleModal={toggleAddModal} />
+            </>
         )}
-        <Button onClick={toggleAddModal}>Добавить группу</Button>
-        <AddGroupModal isOpen={isAddModalOpen} toggleModal={toggleAddModal} />
       </div>
     </>
   );

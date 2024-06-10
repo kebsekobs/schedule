@@ -9,14 +9,10 @@ export const service = {
        addClassroom: function (config = {}) {
               return axios.post(classrooms_url, config).then(response => response.data);
        },
-       deleteClassroom: function (classroomId, config = {}) {
+       deleteClassroom: function (params, config = {}) {
               const url = `${classrooms_url}/delete`;
-              return axios.post(url,classroomId, config)
+              return axios.post(url, params, config)
                   .then(response => response.data);
-       },
-       getClassroomById: function (classroomId, config = {}) {
-              const url = `${classrooms_url}/${classroomId}`;
-              return axios.get(url, config).then(response => response.data);
        },
        editClassroom: function (data, config = {}) {
               return axios.put(`${classrooms_url}`, data, config).then(response => response.data);

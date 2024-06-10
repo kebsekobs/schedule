@@ -11,20 +11,23 @@ const Classrooms = () => {
     setIsAddModalOpen(!isAddModalOpen);
   };
   return (
-    <>
-      <div className={"page"}>
-        {getClassroomsQuery.isLoading ? (
-          "Загружаем"
-        ) : (
-          <CoursesTable data={getClassroomsQuery.data} />
-        )}
-        <Button onClick={toggleAddModal}>Добавить аудиторию</Button>
-        <AddClassroomModal
-          isOpen={isAddModalOpen}
-          toggleModal={toggleAddModal}
-        />
-      </div>
-    </>
+      <>
+        <div className={"page"}>
+          {getClassroomsQuery.isLoading ? (
+              "Загружаем"
+          ) : (
+              <>
+                <CoursesTable data={getClassroomsQuery.data} />
+                <Button onClick={toggleAddModal}>Добавить аудиторию</Button>
+                <AddClassroomModal
+                    data={getClassroomsQuery.data}
+                    isOpen={isAddModalOpen}
+                    toggleModal={toggleAddModal}
+                />
+              </>
+          )}
+        </div>
+      </>
   );
 };
 
