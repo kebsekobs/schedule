@@ -11,7 +11,7 @@ export const service = {
        },
        deleteClassroom: function (classroomId, config = {}) {
               const url = `${classrooms_url}/delete`;
-              return axios.post(url, config)
+              return axios.post(url,classroomId, config)
                   .then(response => response.data);
        },
        getClassroomById: function (classroomId, config = {}) {
