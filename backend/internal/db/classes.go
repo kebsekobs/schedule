@@ -3,7 +3,6 @@ package db
 import (
 	"database/sql"
 	"log"
-	"slices"
 
 	_ "github.com/go-sql-driver/mysql"
 
@@ -12,18 +11,40 @@ import (
 )
 
 // CRUD методы для таблицы "classes"
-func GetClasses(db *sql.DB) ([]*api.Discipline, error) {
-	query := "SELECT id, name, groupid, teacherid, hours, streamid FROM classes"
+
+func CreateClass(db *sql.DB, class api.Discipline) error {
+	err := deleteClassGroupsLinks(db, class.ID)
+	if err != nil {
+		return err
+	}
+	err = insertClassesGroupsLinks(db, class.ID, class.RelatedGroupsId)
+	if err != nil {
+		return err
+	}
+	query := "INSERT INTO classes (name, teacherid, hours) VALUES (?,?,?)"
+	_, err = db.Exec(query, class.Name, class.Teachers, class.Hours)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func GetClasses(db *sql.DB) ([]api.Discipline, error) {
+	query := "SELECT id, name, teacherid, hours FROM classes"
 	rows, err := db.Query(query)
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
 
-	var classes []*api.Discipline
+	var classes []api.Discipline
 	for rows.Next() {
 		var class api.Discipline
-		err := rows.Scan(&class.ID, &class.Name, &class.GroupID, &class.Teachers, &class.Hours, &class.StreamID)
+		err := rows.Scan(&class.ID, &class.Name, &class.Teachers, &class.Hours)
+		if err != nil {
+			return nil, err
+		}
+		class.RelatedGroupsId, err = getClassesGroupsLinks(db, class.ID)
 		if err != nil {
 			return nil, err
 		}
@@ -32,62 +53,43 @@ func GetClasses(db *sql.DB) ([]*api.Discipline, error) {
 	return classes, nil
 }
 
-func UpdateClass(db *sql.DB, class *api.Discipline) {
-	if class.DisciplinesId != 0 {
-		deleteClassByStreamId(db, class.DisciplinesId)
-	}
-	classes := make(map[int]*generation.Class)
-	if len(class.RelatedGroupsId) == 1 {
-		classes[class.ID] = &generation.Class{
-			ID: 0,
-			Teacher: &generation.Teacher{
-				ID: id,
-			},
-			Group: &generation.Group{
-				ID: class.RelatedGroupsId[0],
-			},
-			Name: class.Name,
-			Hours: class.Hours,
-		}
-	} else {
-		for _, group := range class.RelatedGroupsId {
-			class[]
-		}	
-	}
-	for _, group := range class.RelatedGroupsId {
-		class[]
-	}
-	InsertClasses(db, classes)
-	query := "UPDATE classes SET name = ? WHERE id = ?"
-	_, err := db.Exec(query, newName, id)
+func UpdateClass(db *sql.DB, class api.Discipline) error {
+	err := deleteClassGroupsLinks(db, class.ID)
 	if err != nil {
-		panic(err.Error())
+		return err
 	}
+	err = insertClassesGroupsLinks(db, class.ID, class.RelatedGroupsId)
+	if err != nil {
+		return err
+	}
+	query := "UPDATE classes SET name = ?, teacherid = ?, hours = ? WHERE id = ?"
+	_, err = db.Exec(query, class.Name, class.Teachers, class.Hours, class.ID)
+	if err != nil {
+		return err
+	}
+	return nil
 }
 
-func deleteClassByStreamId(db *sql.DB, streamid int) {
-	query := "DELETE FROM classes WHERE streamid = ?"
-	_, err := db.Exec(query, streamid)
-	if err != nil {
-		panic(err.Error())
-	}
-}
-
-func DeleteClass(db *sql.DB, id int) {
+func DeleteClass(db *sql.DB, id int) error {
 	query := "DELETE FROM classes WHERE id = ?"
 	_, err := db.Exec(query, id)
 	if err != nil {
-		panic(err.Error())
+		return err
 	}
+	err = deleteClassGroupsLinks(db, id)
+	if err != nil {
+		return err
+	}
+	return nil
 }
 
 func InsertClasses(db *sql.DB, classes map[int]*generation.Class) error {
-	query := "INSERT INTO classes (id, name, groupid, teacherid, hours, streamid) VALUES "
+	query := "INSERT INTO classes (id, name, teacherid, hours) VALUES "
 	for range classes {
-		query += "(?, ?, ?, ?, ?, ?),"
+		query += "(?, ?, ?, ?),"
 	}
 	query = query[:len(query)-1] // Remove the trailing comma
-	query += " ON DUPLICATE KEY UPDATE name=VALUES(name), groupid=VALUES(groupid), teacherid=VALUES(teacherid), hours=VALUES(hours), streamid=VALUES(streamid)"
+	query += " ON DUPLICATE KEY UPDATE name=VALUES(name), teacherid=VALUES(teacherid), hours=VALUES(hours)"
 
 	stmt, err := db.Prepare(query)
 	if err != nil {
@@ -97,7 +99,20 @@ func InsertClasses(db *sql.DB, classes map[int]*generation.Class) error {
 
 	var values []interface{}
 	for classid, class := range classes {
-		values = append(values, classid, class.Name, class.Group.ID, class.Teacher.ID, class.Hours, class.ID)
+		if class.ID == 0 {
+			values = append(values, classid, class.Name, class.Teacher.ID, class.Hours)
+			err = insertClassesGroupsLinks(db, classid, []string{class.Group.ID})
+			if err != nil {
+				return err
+			}
+		} else {
+			values = append(values, class.ID, class.Name, class.Teacher.ID, class.Hours)
+			err = insertClassesGroupsLinks(db, class.ID, []string{class.Group.ID})
+			if err != nil {
+				return err
+			}
+		}
+
 	}
 
 	_, err = stmt.Exec(values...)
@@ -113,62 +128,67 @@ func SelectClasses(db *sql.DB, groups []*generation.Group, teachers []*generatio
 
 	var commonClasses []*generation.CommonClass
 
-	rows, err := db.Query("SELECT id, groupid, teacherid, name, hours, streamid FROM classes")
+	rows, err := db.Query("SELECT id, teacherid, name, hours FROM classes")
 	if err != nil {
 		return nil, nil, err
 	}
 	defer rows.Close()
 
 	for rows.Next() {
-		var groupID, name string
-		var id, hours, teacherID, streamID int
-		err = rows.Scan(&id, &groupID, &teacherID, &name, &hours, &streamID)
+		var name string
+		var id, hours, teacherID int
+		var groupIds []*generation.Group
+		err = rows.Scan(&id, &teacherID, &name, &hours)
 		if err != nil {
 			log.Println(err)
 			continue
 		}
-
+		groupIdsRows, err := db.Query("SELECT groupid FROM classes_groups WHERE classid = ?")
+		if err != nil {
+			log.Println(err)
+			continue
+		}
+		defer groupIdsRows.Close()
+		for groupIdsRows.Next() {
+			var groupID string
+			err = rows.Scan(&groupID)
+			if err != nil {
+				log.Println(err)
+				continue
+			}
+			group := getGroupByID(groups, groupID)
+			if group == nil {
+				log.Println("No group")
+				continue
+			}
+			groupIds = append(groupIds, group)
+		}
 		teacher := getTeacherByID(teachers, teacherID)
 		if teacher == nil {
 			log.Println("No teacher")
 			continue
 		}
-		group := getGroupByID(groups, groupID)
-		if group == nil {
-			log.Println("No group")
-			continue
-		}
 
-		if streamID == 0 {
+		if len(groupIds) == 1 {
 			classes = append(
 				classes,
 				generation.Class{
 					ID:      id,
 					Teacher: teacher,
-					Group:   group,
+					Group:   groupIds[0],
 					Name:    name,
 					Hours:   hours,
 				})
 		} else {
-			class := getClassByID(commonClasses, streamID)
-			if class != nil {
-				if !slices.Contains(class.Groups, group) {
-					class.Groups = append(class.Groups, group)
-				}
-				if class.Hours == 0 && hours != 0 {
-					class.Hours = hours
-				}
-			} else {
-				commonClasses = append(
-					commonClasses,
-					&generation.CommonClass{
-						ID:      streamID,
-						Teacher: teacher,
-						Groups:  []*generation.Group{group},
-						Name:    name,
-						Hours:   hours,
-					})
-			}
+			commonClasses = append(
+				commonClasses,
+				&generation.CommonClass{
+					ID:      id,
+					Teacher: teacher,
+					Groups:  groupIds,
+					Name:    name,
+					Hours:   hours,
+				})
 		}
 	}
 
@@ -203,6 +223,61 @@ func getClassByID(classes []*generation.CommonClass, id int) *generation.CommonC
 		if class.ID == id {
 			return class
 		}
+	}
+	return nil
+}
+
+func getClassesGroupsLinks(db *sql.DB, classID int) ([]string, error) {
+	query := "SELECT groupid FROM classes_groups WHERE classid = ?"
+	var groupIds []string
+	rows, err := db.Query(query, classID)
+	defer rows.Close()
+	for rows.Next() {
+		var groupId string
+		err = rows.Scan(&groupId)
+		if err != nil {
+			log.Println(err)
+			continue
+		}
+		groupIds = append(groupIds)
+	}
+	if err != nil {
+		return nil, err
+	}
+	return groupIds, nil
+}
+
+func insertClassesGroupsLinks(db *sql.DB, classID int, groupIds []string) error {
+	query := "INSERT IGNORE INTO classes_groups (classid, groupid) VALUES "
+	for range groupIds {
+		query += "(?, ?),"
+	}
+	query = query[:len(query)-1] // Remove the trailing comma
+
+	stmt, err := db.Prepare(query)
+	if err != nil {
+		return err
+	}
+	defer stmt.Close()
+
+	var values []interface{}
+	for _, groupId := range groupIds {
+		values = append(values, classID, groupId)
+	}
+
+	_, err = stmt.Exec(values...)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func deleteClassGroupsLinks(db *sql.DB, id int) error {
+	query := "DELETE FROM classes_groups WHERE classid = ?"
+	_, err := db.Exec(query, id)
+	if err != nil {
+		return err
 	}
 	return nil
 }

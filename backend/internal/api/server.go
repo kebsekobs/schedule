@@ -437,7 +437,7 @@ func updateClassroom(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Update the teacher
+	// Update the room
 	err = db.UpdateRoom(_db, updatedRoom)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
@@ -454,7 +454,7 @@ func deleteClassroom(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Assign a unique ID to the new teacher
+	// Assign a unique ID to the new room
 	err = db.DeleteRoom(_db, newRoom.ID)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
@@ -471,7 +471,7 @@ func addClassroom(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Assign a unique ID to the new teacher
+	// Assign a unique ID to the new room
 	err = db.CreateRoom(_db, newRoom)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
@@ -484,36 +484,64 @@ func addClassroom(w http.ResponseWriter, r *http.Request) {
 
 func getDisciplines(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(disciplines)
+	classes, err := db.GetClasses(_db)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+	json.NewEncoder(w).Encode(classes)
+	w.WriteHeader(http.StatusOK)
 }
 
 func updateDiscipline(w http.ResponseWriter, r *http.Request) {
-	disciplineID := r.URL.Path[len("/disciplines/"):]
-	var updatedDiscipline Discipline
-	err := json.NewDecoder(r.Body).Decode(&updatedDiscipline)
+	var updatedClass api.Discipline
+	err := json.NewDecoder(r.Body).Decode(&updatedClass)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
-	http.Error(w, "Discipline not found", http.StatusNotFound)
+
+	// Update the class
+	err = db.UpdateClass(_db, updatedClass)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+	w.WriteHeader(http.StatusOK)
 }
 
 func deleteDiscipline(w http.ResponseWriter, r *http.Request) {
-	disciplineID := r.URL.Path[len("/disciplines/"):]
-
-	http.Error(w, "Discipline not found", http.StatusNotFound)
-}
-
-func addDiscipline(w http.ResponseWriter, r *http.Request) {
-	var newDiscipline Discipline
-	err := json.NewDecoder(r.Body).Decode(&newDiscipline)
+	var delClass api.Discipline
+	err := json.NewDecoder(r.Body).Decode(&delClass)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(http.StatusCreated)
-	json.NewEncoder(w).Encode(newDiscipline)
+
+	// Assign a unique ID to the new room
+	err = db.DeleteClass(_db, delClass.ID)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+	w.WriteHeader(http.StatusOK)
+}
+
+func addDiscipline(w http.ResponseWriter, r *http.Request) {
+	var newClass api.Discipline
+	err := json.NewDecoder(r.Body).Decode(&newClass)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	// Assign a unique ID to the new class
+	err = db.CreateClass(_db, newClass)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+	w.WriteHeader(http.StatusOK)
 }
 
 func RunServer() {
