@@ -19,7 +19,7 @@ export const service = {
                   .then(response => response.data);
        },
        getGroupById: function (groupId,config = {}) {
-              const url = `${group_url}`;  // Создание полного URL с ID группы
+              const url = `${group_url}/${groupId}`;  // Создание полного URL с ID группы
               return axios.get(url, config).then(response => response.data);
        },
        editGroup: function (data,config = {}) {
