@@ -15,7 +15,7 @@ export const service = {
                   .then(response => response.data);
        },
        getClassroomById: function (classroomId, config = {}) {
-              const url = `${classrooms_url}`;
+              const url = `${classrooms_url}/${classroomId}`;
               return axios.get(url, config).then(response => response.data);
        },
        editClassroom: function (data, config = {}) {

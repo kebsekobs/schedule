@@ -15,7 +15,7 @@ export const service = {
                   .then(response => response.data);
        },
        getTeacherById: function (teacherId, config = {}) {
-              const url = `${teachers_url}`;
+              const url = `${teachers_url}/${teacherId}`;
               return axios.get(url, config).then(response => response.data);
        },
        editTeacher: function (data, config = {}) {
