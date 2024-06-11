@@ -83,7 +83,7 @@ const Groups = () => {
         ) : (
           <>
             <Button onClick={toggleAddModal}>Добавить группу</Button>
-            <CoursesTable data={data} getRowCanExpand={() => true} />
+            <CoursesTable data={data} />
             <AddGroupModal
               data={getGroupsQuery.data}
               isOpen={isAddModalOpen}

@@ -2,8 +2,8 @@ import { CellHelper } from "./CellHelpers";
 import { createColumnHelper } from "@tanstack/react-table";
 import { EditCell } from "./EditCell";
 import Button from "../../../components/button";
-import minus from '../../../assets/minus.svg';
-import plus from '../../../assets/plus.svg';
+import down from '../../../assets/down-arrow.svg';
+import up from '../../../assets/up-arrow.svg';
 
 const { accessor, group } = createColumnHelper();
 
@@ -13,31 +13,32 @@ export const columns = [
     header: "Курс",
     columns: [
       accessor("year", {
-        size: 100,
+        size: 200,
         header: "",
-        cell: ({ row, subRows, getValue }) => (
-          <div>
+        cell: ({ row, getValue }) => (
+          <>
             {row.getCanExpand() ? (
-              <Button
+              <span
                 {...{
                   onClick: row.getToggleExpandedHandler(),
                   style: { cursor: "pointer" },
                 }}
               >
                 {row.getIsExpanded() ? (
-                  <img src={minus} alt="icon" style={{width: '1rem', height: '1rem'}}/>
+                  <img src={up} alt="icon" style={{width: '2rem', height: '2rem', cursor: 'pointer', marginRight: '1rem'}}/>
                 ) : (
-                  <img src={plus} alt="icon" style={{width: '1rem', height: '1rem'}}/>
+                  <img src={down} alt="icon" style={{width: '2rem', height: '2rem', cursor: 'pointer', marginRight: '1rem'}}/>
                 )}
-              </Button>
+              </span>
             ) : (
               null
             )}
             {getValue()}
-          </div>
+          </>
         ),
       }),
     ],
+    
   }),
   group({
     id: "@groupId",
@@ -100,7 +101,7 @@ export const columns = [
       accessor("capacity", {
         header: "",
         size: 50,
-        cell: (data) => <EditCell props={data.row} />,
+        cell: ({ row }) => !row.getCanExpand() && <EditCell props={row} />,
       }),
     ],
   }),

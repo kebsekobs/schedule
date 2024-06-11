@@ -51,18 +51,6 @@ const CoursesTable = ({ data, getRowCanExpand }) => {
                 </td>
               ))}
             </tr>
-            {/* <tr>
-              {row.getIsExpanded() && (
-                <tr>
-                  <td colSpan={row.getVisibleCells().length}>
-
-                    <pre style={{ fontSize: "10px" }}>
-                      <code>{JSON.stringify(row.original, null, 2)}</code>
-                    </pre>
-                  </td>
-                </tr>
-              )}
-            </tr> */}
           </>
         ))}
       </tbody>
