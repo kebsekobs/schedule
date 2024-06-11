@@ -1,13 +1,14 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   flexRender,
   getCoreRowModel,
   useReactTable,
+  getExpandedRowModel,
 } from "@tanstack/react-table";
 import { columns } from "./columns";
-import styles from '../../shared/style/table.module.css';
+import styles from "../../shared/style/table.module.css";
 
-const CoursesTable = ({ data }) => {
+const CoursesTable = ({ data, getRowCanExpand }) => {
   const table = useReactTable({
     columns,
     data,
@@ -21,7 +22,7 @@ const CoursesTable = ({ data }) => {
           <tr key={headerGroup.id}>
             {headerGroup.headers.map((header) => (
               <th
-                style={{ width: "250px", border: "2px solid #424242" }}
+                // style={{ width: "250px", border: "1px solid #a7a7a7" }}
                 key={header.id}
               >
                 <h2>
@@ -45,6 +46,15 @@ const CoursesTable = ({ data }) => {
                 </h3>
               </td>
             ))}
+            {/* {row.getIsExpanded() && (
+              <tr>
+                <td colSpan={row.getVisibleCells().length}>
+                  <pre style={{ fontSize: "10px" }}>
+                    <code>{JSON.stringify(row.original, null, 2)}</code>
+                  </pre>
+                </td>
+              </tr>
+            )} */}
           </tr>
         ))}
       </tbody>

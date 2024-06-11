@@ -1,5 +1,6 @@
 import { createColumnHelper } from "@tanstack/react-table";
 import { EditCell } from "./EditCell";
+import Button from "../../../components/button";
 
 const { accessor, group } = createColumnHelper();
 

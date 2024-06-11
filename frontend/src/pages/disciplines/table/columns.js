@@ -29,7 +29,7 @@ export const columns = [
     }),
     group({
         id: '@hours',
-        header: 'Часы/2нед',
+        header: 'Часы/нед',
         columns: [
             accessor('hours', {
                 header: '',

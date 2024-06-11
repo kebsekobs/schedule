@@ -6,16 +6,24 @@
 
 :root {
   --main-color: #8090bc;
-  --background-color: #f7f9ff;
+  --background-color: #fefeff;
   --warning-color: #c83044;
+}
+
+html {
+  font-size: 60%;
 }
 
 body {
   background-color: var(--background-color);
+  font-size: 1.8rem;
 }
 
 h2 {
-  background-color: var(--background-color);
+  background-color: #f7f9ff;
+  margin-left: 1rem;
+  margin-right: 1rem;
+  margin-bottom: 1rem;
 }
 
 .optionContainer > li {
