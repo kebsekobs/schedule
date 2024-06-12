@@ -18,7 +18,7 @@ const EditGroupModal = ({ isOpen, toggleModal, original }) => {
   } = useForm({
     defaultValues: {
       groupId: original.groupId,
-      id: original.id,
+      name: original.name,
       capacity: original.capacity,
       magistracy: original.magistracy,
     },
@@ -26,7 +26,8 @@ const EditGroupModal = ({ isOpen, toggleModal, original }) => {
 
   const editGroupMutation = useEditGroupMutation();
   const onSubmit = (data) => {
-    data.groupId = Number(data.groupId)
+    data.groupId = Number(data.groupId);
+    data.id = original.id;
     editGroupMutation.mutateAsync(data);
     toggleModal();
     reset();
@@ -75,7 +76,7 @@ const EditGroupModal = ({ isOpen, toggleModal, original }) => {
             )}
             <label>Введите код группы</label>
             <input
-                {...register("id", {
+                {...register("name", {
                   required: "Это поле обязательно",
                   validate: value => value=== original.id || !existingGroupIds.includes(value) || "Такой ID уже существует"
                 })}

@@ -42,7 +42,7 @@ const AddClassroomModal = ({data, isOpen, toggleModal }) => {
           >
             <label>Введите аудиторию</label>
             <input
-                {...register("id", {
+                {...register("classroomId", {
                   required: "Это поле обязательно",
                   validate: value => !existingClassroomsIds.includes(value) || "Такой ID уже существует"
                 })}
