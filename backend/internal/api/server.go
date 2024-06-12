@@ -588,12 +588,26 @@ func RunServer() {
 			http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
 		}
 	})
+	mux.HandleFunc("/groups/delete", func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Access-Control-Allow-Origin", "*")
+		w.Header().Set("Access-Control-Allow-Methods", "OPTIONS, GET, POST, PUT, DELETE")
+		switch r.Method {
+		case http.MethodPost:
+			deleteGroup(w, r)
+		default:
+			http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+		}
+	})
 	mux.HandleFunc("/teachers", func(w http.ResponseWriter, r *http.Request) {
 		switch r.Method {
 		case http.MethodGet:
 			getTeachers(w, r)
 		case http.MethodPost:
 			addTeacher(w, r)
+		case http.MethodPut:
+			updateTeacher(w, r)
+		case http.MethodDelete:
+			deleteTeacher(w, r)
 		case http.MethodOptions:
 			optionsHandler(w, r)
 		default:
@@ -610,6 +624,16 @@ func RunServer() {
 			deleteTeacher(w, r)
 		case http.MethodOptions:
 			optionsHandler(w, r)
+		default:
+			http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+		}
+	})
+	mux.HandleFunc("/teachers/delete", func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Access-Control-Allow-Origin", "*")
+		w.Header().Set("Access-Control-Allow-Methods", "OPTIONS, GET, POST, PUT, DELETE")
+		switch r.Method {
+		case http.MethodPost:
+			deleteTeacher(w, r)
 		default:
 			http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
 		}
@@ -666,6 +690,10 @@ func RunServer() {
 			addDiscipline(w, r)
 		case http.MethodOptions:
 			optionsHandler(w, r)
+		case http.MethodPut:
+			updateDiscipline(w, r)
+		case http.MethodDelete:
+			deleteDiscipline(w, r)
 		default:
 			http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
 		}
@@ -682,7 +710,16 @@ func RunServer() {
 			http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
 		}
 	})
-
+	mux.HandleFunc("/disciplines/delete", func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Access-Control-Allow-Origin", "*")
+		w.Header().Set("Access-Control-Allow-Methods", "OPTIONS, GET, POST, PUT, DELETE")
+		switch r.Method {
+		case http.MethodPost:
+			deleteDiscipline(w, r)
+		default:
+			http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+		}
+	})
 	// Настройка CORS
 	c := cors.New(cors.Options{
 		AllowedOrigins: []string{"*"},                                       // Разрешаем все источники

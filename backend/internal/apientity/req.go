@@ -25,6 +25,6 @@ type Discipline struct {
 	DisciplinesId   int      `json:"disciplinesId"`
 	Name            string   `json:"name"`
 	Teachers        string   `json:"teachers"`
-	Hours           int      `json:"hours"`
+	Hours           string   `json:"hours"`
 	RelatedGroupsId []string `json:"relatedGroupsId"`
 }

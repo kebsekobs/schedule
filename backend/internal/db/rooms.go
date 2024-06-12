@@ -12,7 +12,7 @@ import (
 func CreateRoom(db *sql.DB, room api.Classroom) error {
 	query := "INSERT INTO rooms (id, capacity) VALUES (?, ?)"
 	query += " ON DUPLICATE KEY UPDATE capacity = VALUES(capacity)"
-	_, err := db.Exec(query, room.ClassroomID, room.Capacity)
+	_, err := db.Exec(query, room.ID, room.Capacity)
 	if err != nil {
 		return err
 	}
@@ -30,7 +30,7 @@ func GetRooms(db *sql.DB) ([]api.Classroom, error) {
 	var rooms []api.Classroom
 	for rows.Next() {
 		var room api.Classroom
-		err := rows.Scan(&room.ClassroomID, &room.Capacity)
+		err := rows.Scan(&room.ID, &room.Capacity)
 		if err != nil {
 			return nil, err
 		}
@@ -41,7 +41,7 @@ func GetRooms(db *sql.DB) ([]api.Classroom, error) {
 
 func UpdateRoom(db *sql.DB, room api.Classroom) error {
 	query := "UPDATE rooms SET capacity = ? WHERE id = ?"
-	_, err := db.Exec(query, room.Capacity, room.ClassroomID)
+	_, err := db.Exec(query, room.Capacity, room.ID)
 	if err != nil {
 		return err
 	}
