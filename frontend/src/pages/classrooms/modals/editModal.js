@@ -51,7 +51,7 @@ console.log(existingClassroomsIds);
         >
           <label>Введите аудиторию</label>
           <input
-              {...register("calssroomId", {
+              {...register("classroomId", {
                 required: "Это поле обязательно",
                 validate: value => value=== original.id || !existingClassroomsIds.includes(value) || "Такой ID уже существует"
               })}
