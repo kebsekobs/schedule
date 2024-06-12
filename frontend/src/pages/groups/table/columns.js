@@ -38,13 +38,12 @@ export const columns = [
         ),
       }),
     ],
-    
   }),
   group({
-    id: "@groupId",
+    id: "@name",
     header: "Номер группы",
     columns: [
-      accessor("groupId", {
+      accessor("name", {
         header: "",
         size: 400,
         cell: (data) => (
@@ -101,7 +100,7 @@ export const columns = [
       accessor("capacity", {
         header: "",
         size: 50,
-        cell: ({ row }) => !row.getCanExpand() && <EditCell props={row} />,
+        cell: ({ row }) => !row.subRows.length > 0 && <EditCell props={row} />,
       }),
     ],
   }),
