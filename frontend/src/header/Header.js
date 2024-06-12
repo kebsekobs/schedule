@@ -1,11 +1,15 @@
-import React from "react";
+import React, { useState } from "react";
 import style from "./header.module.css";
 import { headerItems } from "./headerItems";
 import { NavLink } from "react-router-dom";
 import { useGenerateMutation } from "./useGenerateMutation";
+import Button from "../components/button";
 
 const Header = () => {
   const generateMutation = useGenerateMutation();
+ function generateMutationHandle () {
+  generateMutation.mutateAsync()
+ }
   return (
     <div className={style["header"]}>
       <div className={style["header-items"]}>
@@ -20,9 +24,9 @@ const Header = () => {
             {item.name}
           </NavLink>
         ))}
-        <h2 className={style['header-item']} style={{marginTop: '7px'}} onClick={() => generateMutation()} >
+        <Button className={style['header-item']} style={{marginTop: '7px'}} onClick ={() => generateMutationHandle()} >
           Сгенерировать
-          </h2>
+          </Button>
       </div>
     </div>
   );

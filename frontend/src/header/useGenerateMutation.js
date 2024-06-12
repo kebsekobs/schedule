@@ -1,11 +1,11 @@
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import axios from "axios";
 
 export const useGenerateMutation = () => {
-    return useQuery({
-        queryKey: ['generate'],
-        queryFn: () => service.generate(),
-    });
+    return useMutation({
+        mutationKey: 'generate',
+        mutationFn: () => service.generate()
+        });
 };
 const url = `http://localhost:3001/generate`;
 export const service = {
