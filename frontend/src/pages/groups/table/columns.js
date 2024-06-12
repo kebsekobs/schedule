@@ -40,10 +40,10 @@ export const columns = [
     ],
   }),
   group({
-    id: "@name",
+    id: "@id",
     header: "Номер группы",
     columns: [
-      accessor("name", {
+      accessor("groupId", {
         header: "",
         size: 400,
         cell: (data) => (
@@ -53,10 +53,10 @@ export const columns = [
     ],
   }),
   group({
-    id: "@id",
+    id: "@name",
     header: "Id группы",
     columns: [
-      accessor("id", {
+      accessor("name", {
         header: "",
         size: 50,
         cell: (data) => (
