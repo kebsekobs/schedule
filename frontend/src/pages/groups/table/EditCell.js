@@ -14,7 +14,7 @@ export function EditCell(props) {
     setIsEditModalOpen(!isEditModalOpen);
   };
   function deleteGroup() {
-    if (window.confirm("Вы уверены, что хотите удалить группу?"))
+    if (window.confirm("Вы уверены, что хотите удалить группу?")) {}
       deleteGroupMutation.mutateAsync({id});
   }
 

@@ -18,7 +18,7 @@ export function EditCell(props) {
   function deleteClassroom() {
     console.log(isDeleteModalOpen);
     setisDeleteModalOpen(!isDeleteModalOpen);
-    console.log(isDeleteModalOpen);
+    
   }
     console.log(isDeleteModalOpen)
   return (

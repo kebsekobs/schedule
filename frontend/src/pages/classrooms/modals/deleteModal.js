@@ -12,6 +12,7 @@ export function DeleteModal({ deleteClassroom, isOpen, original }) {
   }
   function deleteGroup() {
     deleteClassroomMutation.mutateAsync({ id });
+    deleteClassroom(true);
   }
 
   return (
