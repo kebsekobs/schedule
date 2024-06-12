@@ -8,7 +8,7 @@ export const columns = [
     id: "@id",
     header: "Номер аудитории",
     columns: [
-      accessor("id", {
+      accessor("classroomId", {
         header: "",
         size: 400,
         cell: (data) => (
