@@ -17,13 +17,14 @@ console.log(existingClassroomsIds);
     reset,
   } = useForm({
     defaultValues: {
-      id: original.id,
+      calssroomId: original.calssroomId,
       capacity: original.capacity
     },
   });
 
   const editClassroomMutation = useEditClassroomMutation();
   const onSubmit = (data) => {
+    data.id = original.id;
     editClassroomMutation.mutateAsync(data);
     toggleModal();
     reset();
@@ -50,7 +51,7 @@ console.log(existingClassroomsIds);
         >
           <label>Введите аудиторию</label>
           <input
-              {...register("id", {
+              {...register("calssroomId", {
                 required: "Это поле обязательно",
                 validate: value => value=== original.id || !existingClassroomsIds.includes(value) || "Такой ID уже существует"
               })}

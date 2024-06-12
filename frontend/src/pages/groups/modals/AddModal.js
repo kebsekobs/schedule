@@ -65,7 +65,7 @@ const AddGroupModal = ({data, isOpen, toggleModal }) => {
             )}
             <label>Введите код группы</label>
             <input
-                {...register("id", {
+                {...register("name", {
                   required: "Это поле обязательно",
                   validate: value => !existingGroupIds.includes(value) || "Такой ID уже существует"
                 })}
