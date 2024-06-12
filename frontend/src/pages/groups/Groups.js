@@ -7,7 +7,7 @@ import Button from "../../components/button";
 const Groups = () => {
   const getGroupsQuery = useGroupsQuery();
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
-
+  const data = getGroupsQuery.data
   const toggleAddModal = () => {
     setIsAddModalOpen(!isAddModalOpen);
   };
@@ -21,7 +21,7 @@ const Groups = () => {
         ) : (
           <>
             <Button onClick={toggleAddModal}>Добавить группу</Button>
-            <CoursesTable data={getGroupsQuery.data} />
+            <CoursesTable data={data} />
             <AddGroupModal
               data={getGroupsQuery.data}
               isOpen={isAddModalOpen}
