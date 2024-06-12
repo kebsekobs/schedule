@@ -8,7 +8,7 @@ export const CellHelper = {
                 {relatedGroupsArray !== undefined ? (
                     relatedGroupsArray.map((group, index) => (
                         <React.Fragment key={index}>
-                            {group.slice(0, group.indexOf(' ') + 1)}{' '}
+                            {group}{' '}                
                         </React.Fragment>
                     ))
                 ) : null}
