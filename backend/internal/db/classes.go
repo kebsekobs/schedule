@@ -14,7 +14,15 @@ import (
 // CRUD методы для таблицы "classes"
 
 func CreateClass(db *sql.DB, class api.Discipline) error {
-	err := deleteClassGroupsLinks(db, class.ID)
+	err := truncateTable(db, "classes")
+	if err != nil {
+		return err
+	}
+	err = truncateTable(db, "classes_groups")
+	if err != nil {
+		return err
+	}
+	err = deleteClassGroupsLinks(db, class.ID)
 	if err != nil {
 		return err
 	}

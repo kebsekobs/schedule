@@ -4,7 +4,6 @@ type Group struct {
 	ID         string `json:"id"`
 	Magistracy bool   `json:"magistracy"`
 	GroupID    int    `json:"groupId"`
-	Name       string `json:"name"`
 	Capacity   string `json:"capacity"`
 }
 

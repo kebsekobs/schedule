@@ -10,9 +10,13 @@ import (
 
 // CRUD методы для таблицы "groups"
 func CreateGroup(db *sql.DB, group api.Group) error {
-	query := "INSERT INTO groups (id, name, quantity) VALUES (?, ?, ?)"
+	query := "INSERT INTO groups (id, number, quantity, mag) VALUES (?, ?, ?)"
 	query += " ON DUPLICATE KEY UPDATE name, quantity = VALUES(name, quantity)"
-	_, err := db.Exec(query, group.ID, group.Name, group.Capacity)
+	mag := 0
+	if group.Magistracy {
+		mag = 1
+	}
+	_, err := db.Exec(query, group.ID, group.GroupID, group.Capacity, mag)
 	if err != nil {
 		return err
 	}
@@ -20,7 +24,7 @@ func CreateGroup(db *sql.DB, group api.Group) error {
 }
 
 func GetGroups(db *sql.DB) ([]api.Group, error) {
-	query := "SELECT id,  quantity FROM groups"
+	query := "SELECT id, quantity, number, mag FROM groups"
 	rows, err := db.Query(query)
 	if err != nil {
 		return nil, err
@@ -30,7 +34,7 @@ func GetGroups(db *sql.DB) ([]api.Group, error) {
 	var groups []api.Group
 	for rows.Next() {
 		var group api.Group
-		err := rows.Scan(&group.ID, &group.Capacity)
+		err := rows.Scan(&group.ID, &group.Capacity, &group.GroupID, &group.Magistracy)
 		if err != nil {
 			return nil, err
 		}
@@ -40,8 +44,12 @@ func GetGroups(db *sql.DB) ([]api.Group, error) {
 }
 
 func UpdateGroup(db *sql.DB, group api.Group) error {
-	query := "UPDATE groups SET name = ?, quantity = ? WHERE id = ?"
-	_, err := db.Exec(query, group.Name, group.Capacity, group.ID)
+	query := "UPDATE groups SET number = ?, quantity = ?, mag = ? WHERE id = ?"
+	mag := 0
+	if group.Magistracy {
+		mag = 1
+	}
+	_, err := db.Exec(query, group.GroupID, group.Capacity, mag, group.ID)
 	if err != nil {
 		return err
 	}
@@ -83,6 +91,10 @@ func DeleteGroup(db *sql.DB, id string) error {
 // }
 
 func InsertGroups(db *sql.DB, groups map[string]*generation.Group) error {
+	err := truncateTable(db, "groups")
+	if err != nil {
+		return err
+	}
 	query := "INSERT INTO groups (id, quantity) VALUES "
 	for range groups {
 		query += "(?, ?),"

@@ -77,6 +77,10 @@ func DeleteTeacher(db *sql.DB, id int) error {
 }
 
 func InsertTeachers(db *sql.DB, teachers map[string]*generation.Teacher) (map[string]*generation.Teacher, error) {
+	err := truncateTable(db, "teachers")
+	if err != nil {
+		return nil, err
+	}
 	query := "INSERT IGNORE INTO teachers (name) VALUES (?)"
 
 	for _, teacher := range teachers {

@@ -57,6 +57,10 @@ func DeleteRoom(db *sql.DB, id string) error {
 }
 
 func InsertRooms(db *sql.DB, rooms []*generation.Room) error {
+	err := truncateTable(db, "rooms")
+	if err != nil {
+		return err
+	}
 	query := "INSERT INTO rooms (id, capacity) VALUES "
 	for range rooms {
 		query += "(?, ?),"
