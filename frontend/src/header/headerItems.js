@@ -3,5 +3,4 @@ export const headerItems = [
   { name: "Аудитории", path: "/classrooms" },
   { name: "Преподаватели", path: "/teachers" },
   { name: "Дисциплины", path: "/disciplines" },
-  { name: "Сгенерировать" },
 ];
