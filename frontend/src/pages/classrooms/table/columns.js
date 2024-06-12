@@ -5,10 +5,10 @@ const { accessor, group } = createColumnHelper();
 
 export const columns = [
   group({
-    id: "@classroomId",
+    id: "@id",
     header: "Номер аудитории",
     columns: [
-      accessor("classroomId", {
+      accessor("id", {
         header: "",
         size: 400,
         cell: (data) => (

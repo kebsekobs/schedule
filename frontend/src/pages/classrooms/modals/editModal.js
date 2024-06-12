@@ -1,15 +1,15 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { useForm } from "react-hook-form";
-import { useClassroomByIdQuery } from "../api/getClassroomById";
 import { useEditClassroomMutation } from "../api/editClassroomMutation";
 import styles from "../../shared/style/modal.module.css";
 import Button from "../../../components/button";
 import {CloseSvg} from "../../../components/close-svg";
+import {useClassroomsQuery} from "../api/getClassroomsQuery";
 
-const EditGroupModal = ({ isOpen, toggleModal, id }) => {
-  const classroomByIdQuery = useClassroomByIdQuery(id);
-  const [isDataLoaded, setIsDataLoaded] = useState(false);
-
+const EditGroupModal = ({ isOpen, toggleModal, original }) => {
+  const data = useClassroomsQuery().data;
+  const existingClassroomsIds = data.map(group => group.id) ?? []
+console.log(existingClassroomsIds);
   const {
     register,
     handleSubmit,
@@ -17,8 +17,8 @@ const EditGroupModal = ({ isOpen, toggleModal, id }) => {
     reset,
   } = useForm({
     defaultValues: {
-      classroomId: "",
-      capacity: "",
+      id: original.id,
+      capacity: original.capacity
     },
   });
 
@@ -29,24 +29,11 @@ const EditGroupModal = ({ isOpen, toggleModal, id }) => {
     reset();
   };
 
-  useEffect(() => {
-    if (classroomByIdQuery.data) {
-      reset({
-        id: classroomByIdQuery.data.id,
-        classroomId: classroomByIdQuery.data.classroomId,
-        capacity: classroomByIdQuery.data.capacity,
-      });
-      setIsDataLoaded(true);
-    }
-  }, [classroomByIdQuery.data, reset]);
 
   if (!isOpen) {
     return null;
   }
 
-  if (!isDataLoaded) {
-    return <div>Loading...</div>;
-  }
 
   return (
     <div className={styles["backdrop"]}>
@@ -63,13 +50,15 @@ const EditGroupModal = ({ isOpen, toggleModal, id }) => {
         >
           <label>Введите аудиторию</label>
           <input
-              {...register("classroomId", { required: true })}
+              {...register("id", {
+                required: "Это поле обязательно",
+                validate: value => value=== original.id || !existingClassroomsIds.includes(value) || "Такой ID уже существует"
+              })}
               placeholder="103(б)"
               className={styles["input"]}
           />
-          {errors.classroomId && (
-              <span className={styles["error"]}>Это поле обязательно</span>
-          )}
+          {errors.id && (
+              <span className={styles["error"]}>{errors.id.message}</span>)}
           <label>Введите вместимость аудитории</label>
           <input
               type="number"

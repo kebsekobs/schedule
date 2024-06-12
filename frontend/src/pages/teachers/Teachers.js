@@ -18,13 +18,18 @@ const Teachers = () => {
         {getTeachersQuery.isLoading ? (
           "Загружаем"
         ) : (
-          <CoursesTable data={getTeachersQuery.data} />
+          <>
+            <Button onClick={toggleAddModal}>Добавить преподавателя</Button>
+            <CoursesTable
+              data={getTeachersQuery.data}
+              getRowCanExpand={() => true}
+            />
+            <AddTeacherModal
+              isOpen={isAddModalOpen}
+              toggleModal={toggleAddModal}
+            />
+          </>
         )}
-        <Button onClick={toggleAddModal}>Добавить преподавателя</Button>
-        <AddTeacherModal
-          isOpen={isAddModalOpen}
-          toggleModal={toggleAddModal}
-        />
       </div>
     </>
   );

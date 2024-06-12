@@ -5,7 +5,7 @@ export function useDeleteGroupMutation() {
     const queryClient = useQueryClient();
     return useMutation({
         mutationKey: 'group:delete',
-        mutationFn: (groupId) => service.deleteGroup(groupId),
+        mutationFn: (params) => service.deleteGroup(params),
         onSuccess: (_, variables) => {
             const queryKey = ['group:delete', variables];
             queryClient.invalidateQueries(queryKey);

@@ -7,7 +7,7 @@ import styles from '../../shared/style/table.module.css';
 export function EditCell(props) {
   const deleteClassroomMutation = useDeleteClassroomMutation();
   const id = props.props.original.id;
-
+  const original = props.props.original;
 
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
 
@@ -16,27 +16,27 @@ export function EditCell(props) {
   };
   function deleteClassroom() {
     if (window.confirm("Вы уверены, что хотите удалить аудиторию?"))
-    deleteClassroomMutation.mutateAsync(id);
+    deleteClassroomMutation.mutateAsync({id});
   }
 
   return (
     <div style={{padding: '5px'}}>
-      <div
+      <button
         className={styles["btns-wrapper"]}
         onClick={() => toggleEditModal(id)}
       >
         <p>Изменить</p>
         <Pencil1Icon />
-      </div>
-      <div className={styles["btns-wrapper"]} onClick={deleteClassroom}>
+      </button>
+      <button className={styles["btns-wrapper"]} onClick={deleteClassroom}>
         <p style={{ color: "var(--warning-color)" }}>Удалить</p>
         <TrashIcon />
-      </div>
+      </button>
       {isEditModalOpen && (
         <EditModal
           toggleModal={toggleEditModal}
           isOpen={isEditModalOpen}
-          id={id}
+          original={original}
         />
       )}
     </div>

@@ -5,7 +5,7 @@ export function useDeleteClassroomMutation() {
     const queryClient = useQueryClient();
     return useMutation({
         mutationKey: 'classroom:delete',
-        mutationFn: (classroomId) => service.deleteClassroom(classroomId),
+        mutationFn: (params) => service.deleteClassroom(params),
         onSuccess: (_, variables) => {
             const queryKey = ['classroom:delete', variables];
             queryClient.invalidateQueries(queryKey);

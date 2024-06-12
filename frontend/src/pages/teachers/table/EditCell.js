@@ -7,7 +7,7 @@ import styles from '../../shared/style/table.module.css';
 export function EditCell(props) {
   const deleteTeacherMutation = useDeleteTeacherMutation();
   const id = props.props.original.id;
-
+  const original = props.props.original;
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
 
   const toggleEditModal = () => {
@@ -15,7 +15,7 @@ export function EditCell(props) {
   };
   function deleteTeacher() {
     if (window.confirm("Вы уверены, что хотите удалить преподавателя?"))
-    deleteTeacherMutation.mutateAsync(id);
+    deleteTeacherMutation.mutateAsync({id});
   }
 
   return (
@@ -33,9 +33,10 @@ export function EditCell(props) {
       </div>
       {isEditModalOpen && (
         <EditModal
-          toggleModal={toggleEditModal}
-          isOpen={isEditModalOpen}
-          id={id}
+            original={original}
+            toggleModal={toggleEditModal}
+            isOpen={isEditModalOpen}
+            id={id}
         />
       )}
     </div>

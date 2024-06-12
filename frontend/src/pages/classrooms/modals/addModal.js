@@ -5,7 +5,7 @@ import styles from "../../shared/style/modal.module.css";
 import Button from "../../../components/button";
 import { CloseSvg } from "../../../components/close-svg";
 
-const AddClassroomModal = ({ isOpen, toggleModal }) => {
+const AddClassroomModal = ({data, isOpen, toggleModal }) => {
   const form = useForm();
   const {
     reset,
@@ -13,6 +13,8 @@ const AddClassroomModal = ({ isOpen, toggleModal }) => {
     handleSubmit,
     formState: { errors },
   } = form;
+
+  const existingClassroomsIds = data.map(group => group.id) ?? []
 
   const addClassroomMutation = useAddClassroomMutation();
   const onSubmit = (data) => {
@@ -40,13 +42,15 @@ const AddClassroomModal = ({ isOpen, toggleModal }) => {
           >
             <label>Введите аудиторию</label>
             <input
-                {...register("classroomId", { required: true })}
+                {...register("id", {
+                  required: "Это поле обязательно",
+                  validate: value => !existingClassroomsIds.includes(value) || "Такой ID уже существует"
+                })}
                 placeholder="103(б)"
                 className={styles["input"]}
             />
-            {errors.classroomId && (
-                <span className={styles["error"]}>Это поле обязательно</span>
-            )}
+            {errors.id && (
+                <span className={styles["error"]}>{errors.id.message}</span>)}
             <label>Введите вместимость аудитории</label>
             <input
                 type="number"

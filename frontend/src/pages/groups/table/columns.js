@@ -1,10 +1,45 @@
 import { CellHelper } from "./CellHelpers";
 import { createColumnHelper } from "@tanstack/react-table";
 import { EditCell } from "./EditCell";
+import Button from "../../../components/button";
+import down from '../../../assets/down-arrow.svg';
+import up from '../../../assets/up-arrow.svg';
 
 const { accessor, group } = createColumnHelper();
 
 export const columns = [
+  group({
+    id: "@year",
+    header: "Курс",
+    columns: [
+      accessor("year", {
+        size: 200,
+        header: "",
+        cell: ({ row, getValue }) => (
+          <>
+            {row.getCanExpand() ? (
+              <span
+                {...{
+                  onClick: row.getToggleExpandedHandler(),
+                  style: { cursor: "pointer" },
+                }}
+              >
+                {row.getIsExpanded() ? (
+                  <img src={up} alt="icon" style={{width: '2rem', height: '2rem', cursor: 'pointer', marginRight: '1rem'}}/>
+                ) : (
+                  <img src={down} alt="icon" style={{width: '2rem', height: '2rem', cursor: 'pointer', marginRight: '1rem'}}/>
+                )}
+              </span>
+            ) : (
+              null
+            )}
+            {getValue()}
+          </>
+        ),
+      }),
+    ],
+    
+  }),
   group({
     id: "@groupId",
     header: "Номер группы",
@@ -19,10 +54,10 @@ export const columns = [
     ],
   }),
   group({
-      id: "@id",
+    id: "@id",
     header: "Id группы",
     columns: [
-        accessor("id", {
+      accessor("id", {
         header: "",
         size: 50,
         cell: (data) => (
@@ -66,7 +101,7 @@ export const columns = [
       accessor("capacity", {
         header: "",
         size: 50,
-        cell: (data) => <EditCell props={data.row} />,
+        cell: ({ row }) => !row.getCanExpand() && <EditCell props={row} />,
       }),
     ],
   }),

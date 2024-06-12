@@ -10,19 +10,23 @@ const Classrooms = () => {
   const toggleAddModal = () => {
     setIsAddModalOpen(!isAddModalOpen);
   };
+
   return (
     <>
       <div className={"page"}>
         {getClassroomsQuery.isLoading ? (
           "Загружаем"
         ) : (
-          <CoursesTable data={getClassroomsQuery.data} />
+          <>
+            <Button onClick={toggleAddModal}>Добавить аудиторию</Button>
+            <CoursesTable data={getClassroomsQuery.data} />
+            <AddClassroomModal
+              data={getClassroomsQuery.data}
+              isOpen={isAddModalOpen}
+              toggleModal={toggleAddModal}
+            />
+          </>
         )}
-        <Button onClick={toggleAddModal}>Добавить аудиторию</Button>
-        <AddClassroomModal
-          isOpen={isAddModalOpen}
-          toggleModal={toggleAddModal}
-        />
       </div>
     </>
   );

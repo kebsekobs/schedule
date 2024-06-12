@@ -6,9 +6,9 @@ export const service = {
        addDisciplines: function (config = {}) {
               return axios.post(disciplines_url, config).then(response => response.data);
        },
-       deleteDisciplines: function (classroomId, config = {}) {
-              const url = `${disciplines_url}`;
-              return axios.delete(url, config)
+       deleteDisciplines: function (params, config = {}) {
+              const url = `${disciplines_url}/delete`;
+              return axios.post(url, params, config)
                   .then(response => response.data);
        },
        getDisciplinesById: function (classroomId, config = {}) {

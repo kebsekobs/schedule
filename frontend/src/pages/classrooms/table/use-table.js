@@ -21,7 +21,7 @@ const CoursesTable = ({ data }) => {
           <tr key={headerGroup.id}>
             {headerGroup.headers.map((header) => (
               <th
-                style={{ width: "250px", border: "2px solid #424242" }} // тут нужен padding, но почему появляется второй пустой ряд заголовков??
+                // style={{ width: "250px", border: "1px solid #a7a7a7" }} // тут нужен padding, но почему появляется второй пустой ряд заголовков??
                 key={header.id}
               >
                 <h2>

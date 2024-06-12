@@ -7,7 +7,7 @@ import {useDeleteDisciplinesMutation} from "../api/useDeleteDisciplinesMutation"
 export function EditCell(props) {
   const deleteDisciplinesMutation = useDeleteDisciplinesMutation();
   const id = props.props.original.id;
-
+  const original = props.props.original;
 
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
 
@@ -16,7 +16,7 @@ export function EditCell(props) {
   };
   function deleteDisciplines() {
     if (window.confirm("Вы уверены, что хотите удалить дисциплинe?"))
-        deleteDisciplinesMutation.mutateAsync(id);
+        deleteDisciplinesMutation.mutateAsync({id});
   }
 
   return (
@@ -36,7 +36,7 @@ export function EditCell(props) {
         <EditModal
           toggleModal={toggleEditModal}
           isOpen={isEditModalOpen}
-          id={id}
+          original={original}
         />
       )}
     </div>

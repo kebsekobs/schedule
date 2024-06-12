@@ -1,18 +1,15 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { useForm } from "react-hook-form";
-import { useAddGroupsMutation } from "../api/AddGroupMutation";
-import { useGroupByIdQuery } from "../api/getGroupById";
 import { useEditGroupMutation } from "../api/EditGroupMutation";
 import styles from "../../shared/style/modal.module.css";
 import Button from "../../../components/button";
 import {CloseSvg} from "../../../components/close-svg";
 import {useGroupsQuery} from "../api/getGroupsQuery";
 
-const EditGroupModal = ({ isOpen, toggleModal, id }) => {
-  const groupByIdQuery = useGroupByIdQuery(id);
-  const [isDataLoaded, setIsDataLoaded] = useState(false); // Состояние для отслеживания загрузки данных
+const EditGroupModal = ({ isOpen, toggleModal, original }) => {
   const groupsQuery = useGroupsQuery();
   const existingGroupIds = groupsQuery.data?.map(group => group.id) ?? []
+
   const {
     register,
     handleSubmit,
@@ -20,10 +17,10 @@ const EditGroupModal = ({ isOpen, toggleModal, id }) => {
     reset,
   } = useForm({
     defaultValues: {
-      groupId: "",
-      id: "",
-      capacity: "",
-      magistracy: false,
+      groupId: original.groupId,
+      id: original.id,
+      capacity: original.capacity,
+      magistracy: original.magistracy,
     },
   });
 
@@ -34,25 +31,8 @@ const EditGroupModal = ({ isOpen, toggleModal, id }) => {
     reset();
   };
 
-  useEffect(() => {
-    if (groupByIdQuery.data) {
-      reset({
-        groupId: groupByIdQuery.data.groupId,
-        id: groupByIdQuery.data.id,
-        capacity: groupByIdQuery.data.capacity,
-        magistracy: groupByIdQuery.data.magistracy || false,
-      });
-      setIsDataLoaded(true);
-    }
-  }, [groupByIdQuery.data, reset]);
-
   if (!isOpen) {
     return null;
-  }
-
-
-  if (!isDataLoaded) {
-    return <div>Loading...</div>;
   }
 
   return (
@@ -92,7 +72,7 @@ const EditGroupModal = ({ isOpen, toggleModal, id }) => {
             <input
                 {...register("id", {
                   required: "Это поле обязательно",
-                  validate: value => !existingGroupIds.includes(value) || "Такой ID уже существует"
+                  validate: value => value=== original.id || !existingGroupIds.includes(value) || "Такой ID уже существует"
                 })}
                 placeholder="БOЮ15-РПИ2101"
                 className={styles["input"]}
