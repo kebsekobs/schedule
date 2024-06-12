@@ -3,6 +3,7 @@ package db
 import (
 	"database/sql"
 	"log"
+	"strings"
 
 	_ "github.com/go-sql-driver/mysql"
 
@@ -30,7 +31,11 @@ func CreateClass(db *sql.DB, class api.Discipline) error {
 }
 
 func GetClasses(db *sql.DB) ([]api.Discipline, error) {
-	query := "SELECT id, name, teacherid, hours FROM classes"
+	query := `SELECT c.id, c.name, c.teacherid, c.hours, 
+			GROUP_CONCAT(cg.groupid SEPARATOR ',') AS group_ids
+			FROM classes c
+			JOIN classes_groups cg ON c.id = cg.classid
+			GROUP BY c.id, c.name, c.teacherid, c.hours`
 	rows, err := db.Query(query)
 	if err != nil {
 		return nil, err
@@ -39,14 +44,16 @@ func GetClasses(db *sql.DB) ([]api.Discipline, error) {
 	var classes []api.Discipline
 	for rows.Next() {
 		var class api.Discipline
-		err := rows.Scan(&class.ID, &class.Name, &class.Teachers, &class.Hours)
+		var groupIDs string
+		err := rows.Scan(&class.ID, &class.Name, &class.Teachers, &class.Hours, &groupIDs)
 		if err != nil {
 			return nil, err
 		}
-		class.RelatedGroupsId, err = getClassesGroupsLinks(db, class.ID)
-		if err != nil {
-			return nil, err
-		}
+		class.RelatedGroupsId = strings.Split(groupIDs, ",")
+		// class.RelatedGroupsId, err = getClassesGroupsLinks(db, class.ID)
+		// if err != nil {
+		// 	return nil, err
+		// }
 		classes = append(classes, class)
 	}
 	return classes, nil
@@ -229,13 +236,11 @@ func getClassByID(classes []*generation.CommonClass, id int) *generation.CommonC
 func getClassesGroupsLinks(db *sql.DB, classID int) ([]string, error) {
 	query := "SELECT groupid FROM classes_groups WHERE classid = ?"
 	var groupIds []string
-	log.Println(1111)
 	rows, err := db.Query(query, classID)
 	if err != nil {
 		log.Println(err)
 		return nil, err
 	}
-	log.Println(2222)
 
 	defer rows.Close()
 	for rows.Next() {

@@ -34,8 +34,8 @@ func dbConnect() *sql.DB {
 	}
 	// настройка пула соединений
 	localdb.SetConnMaxLifetime(time.Minute * 60)
-	localdb.SetMaxOpenConns(1)
-	localdb.SetMaxIdleConns(1)
+	localdb.SetMaxOpenConns(10)
+	localdb.SetMaxIdleConns(10)
 	return localdb
 }
 
