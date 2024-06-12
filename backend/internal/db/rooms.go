@@ -10,9 +10,9 @@ import (
 
 // CRUD методы для таблицы "rooms"
 func CreateRoom(db *sql.DB, room api.Classroom) error {
-	query := "INSERT INTO rooms (id, capacity) VALUES (?, ?)"
+	query := "INSERT INTO rooms (name, capacity) VALUES (?, ?)"
 	query += " ON DUPLICATE KEY UPDATE capacity = VALUES(capacity)"
-	_, err := db.Exec(query, room.ID, room.Capacity)
+	_, err := db.Exec(query, room.ClassroomID, room.Capacity)
 	if err != nil {
 		return err
 	}
@@ -20,7 +20,7 @@ func CreateRoom(db *sql.DB, room api.Classroom) error {
 }
 
 func GetRooms(db *sql.DB) ([]api.Classroom, error) {
-	query := "SELECT id, capacity FROM rooms"
+	query := "SELECT id, name, capacity FROM rooms"
 	rows, err := db.Query(query)
 	if err != nil {
 		return nil, err
@@ -30,7 +30,7 @@ func GetRooms(db *sql.DB) ([]api.Classroom, error) {
 	var rooms []api.Classroom
 	for rows.Next() {
 		var room api.Classroom
-		err := rows.Scan(&room.ID, &room.Capacity)
+		err := rows.Scan(&room.ID, &room.ClassroomID, &room.Capacity)
 		if err != nil {
 			return nil, err
 		}
@@ -40,8 +40,8 @@ func GetRooms(db *sql.DB) ([]api.Classroom, error) {
 }
 
 func UpdateRoom(db *sql.DB, room api.Classroom) error {
-	query := "UPDATE rooms SET capacity = ? WHERE id = ?"
-	_, err := db.Exec(query, room.Capacity, room.ID)
+	query := "UPDATE rooms SET capacity = ?, name = ? WHERE id = ?"
+	_, err := db.Exec(query, room.Capacity, room.ClassroomID, room.ID)
 	if err != nil {
 		return err
 	}
@@ -61,7 +61,7 @@ func InsertRooms(db *sql.DB, rooms []*generation.Room) error {
 	if err != nil {
 		return err
 	}
-	query := "INSERT INTO rooms (id, capacity) VALUES "
+	query := "INSERT INTO rooms (name, capacity) VALUES "
 	for range rooms {
 		query += "(?, ?),"
 	}
@@ -90,7 +90,7 @@ func InsertRooms(db *sql.DB, rooms []*generation.Room) error {
 func SelectRooms(db *sql.DB) ([]*generation.Room, error) {
 	var rooms []*generation.Room
 
-	rows, err := db.Query("SELECT id, capacity FROM rooms")
+	rows, err := db.Query("SELECT name, capacity FROM rooms")
 	if err != nil {
 		return nil, err
 	}
