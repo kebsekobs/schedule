@@ -21,33 +21,33 @@ function sortToExpand (data) {
 // курсы мага
 const firstYearMag = data.filter(
     (group) =>
-      Math.floor(group.groupId / 100) === 1 && group.magistracy === true
+      Math.floor(Number(group.groupId) / 100) === 1 && group.magistracy === true
   );
   const secondYearMag = data.filter(
     (group) =>
-      Math.floor(group.groupId / 100) === 2 && group.magistracy === true
+      Math.floor(Number(group.groupId) / 100) === 2 && group.magistracy === true
   );
 
   // курсы бакалавры
   const firstYearBach = data.filter(
     (group) =>
-      Math.floor(group.groupId / 100) === 1 && group.magistracy === false
+      Math.floor(Number(group.groupId) / 100) === 1 && group.magistracy === false
   );
   const secondYearBach = data.filter(
     (group) =>
-      Math.floor(group.groupId / 100) === 2 && group.magistracy === false
+      Math.floor(Number(group.groupId) / 100) === 2 && group.magistracy === false
   );
   const thirdYearBach = data.filter(
     (group) =>
-      Math.floor(group.groupId / 100) === 3 && group.magistracy === false
+      Math.floor(Number(group.groupId) / 100) === 3 && group.magistracy === false
   );
   const fourthYearBach = data.filter(
     (group) =>
-      Math.floor(group.groupId / 100) === 4 && group.magistracy === false
+      Math.floor(Number(group.groupId) / 100) === 4 && group.magistracy === false
   );
   const fifthYearBach = data.filter(
     (group) =>
-      Math.floor(group.groupId / 100) === 5 && group.magistracy === false
+      Math.floor(Number(group.groupId) / 100) === 5 && group.magistracy === false
   );
   const undefinedBanch = data.filter((group) => !group.groupId)
   return [

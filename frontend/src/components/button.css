@@ -25,7 +25,7 @@
 .close {
   background-color: var(--warning-color);
   fill: var(--background-color);
-  padding: 0 9px;
+  padding: 5px 10px;
 }
 .close:hover {
   background-color: rgb(175, 42, 60);

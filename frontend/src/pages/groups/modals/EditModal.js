@@ -26,6 +26,7 @@ const EditGroupModal = ({ isOpen, toggleModal, original }) => {
 
   const editGroupMutation = useEditGroupMutation();
   const onSubmit = (data) => {
+    data.groupId = Number(data.groupId)
     editGroupMutation.mutateAsync(data);
     toggleModal();
     reset();
@@ -61,12 +62,16 @@ const EditGroupModal = ({ isOpen, toggleModal, original }) => {
             <label>Введите номер группы</label>
             <input
                 type="number"
-                {...register("groupId", { required: true })}
+                {...register("groupId", { required: true , min: 1})}
                 placeholder="118"
                 className={styles["input"]}
             />
             {errors.groupId && (
-                <span className={styles["error"]}>Это поле обязательно</span>
+                <span className={styles["error"]}>
+              {errors.groupId.type === "required"
+                  ? "Это поле обязательно"
+                  : "Значение должно быть больше 0"}
+            </span>
             )}
             <label>Введите код группы</label>
             <input
