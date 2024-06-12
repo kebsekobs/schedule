@@ -17,6 +17,7 @@ const AddGroupModal = ({data, isOpen, toggleModal }) => {
 
   const addGroupMutation = useAddGroupsMutation();
   const onSubmit = (data) => {
+    data.groupId = Number(data.groupId)
     addGroupMutation.mutateAsync(data);
     toggleModal();
     reset();
