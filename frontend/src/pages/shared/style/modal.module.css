@@ -27,6 +27,20 @@
   background-color: var(--background-color);
 }
 
+.modal-delete {
+  display: flex;
+  flex-direction: row;
+  gap: 10rem;
+}
+
+.delete-text {
+  text-align: justify;
+}
+
+.btn-delete {
+  background-color: var(--warning-color);
+}
+
 /* input[type="checkbox"] {
   -moz-appearance: none;
   -webkit-appearance: none;

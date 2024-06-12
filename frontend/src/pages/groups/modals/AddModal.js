@@ -56,8 +56,12 @@ const AddGroupModal = ({data, isOpen, toggleModal }) => {
                 placeholder="118"
                 className={styles["input"]}
             />
-            {errors.id && (
-                <span className={styles["error"]}>Это поле обязательно</span>
+            {errors.groupId && (
+                <span className={styles["error"]}>
+              {errors.groupId.type === "required"
+                  ? "Это поле обязательно"
+                  : "Значение должно быть больше 0"}
+            </span>
             )}
             <label>Введите код группы</label>
             <input
