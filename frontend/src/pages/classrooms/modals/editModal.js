@@ -17,7 +17,7 @@ console.log(existingClassroomsIds);
     reset,
   } = useForm({
     defaultValues: {
-      calssroomId: original.calssroomId,
+      classroomId: original.classroomId,
       capacity: original.capacity
     },
   });
