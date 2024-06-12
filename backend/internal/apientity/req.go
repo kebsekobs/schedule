@@ -1,10 +1,11 @@
 package api
 
 type Group struct {
-	ID         string `json:"id"`
+	ID         int    `json:"id"`
 	Magistracy bool   `json:"magistracy"`
 	GroupID    int    `json:"groupId"`
 	Capacity   string `json:"capacity"`
+	Name       string `json:"name"`
 }
 
 type Teacher struct {

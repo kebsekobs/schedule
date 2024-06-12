@@ -10,13 +10,13 @@ import (
 
 // CRUD методы для таблицы "groups"
 func CreateGroup(db *sql.DB, group api.Group) error {
-	query := "INSERT INTO groups (id, number, quantity, mag) VALUES (?, ?, ?)"
-	query += " ON DUPLICATE KEY UPDATE name, quantity = VALUES(name, quantity)"
+	query := "INSERT INTO groups (number, name, quantity, mag) VALUES (?,?, ?, ?)"
+	query += " ON DUPLICATE KEY UPDATE number, name, quantity, mag = VALUES(number, name, quantity, mag)"
 	mag := 0
 	if group.Magistracy {
 		mag = 1
 	}
-	_, err := db.Exec(query, group.ID, group.GroupID, group.Capacity, mag)
+	_, err := db.Exec(query, group.GroupID, group.Name, group.Capacity, mag)
 	if err != nil {
 		return err
 	}
@@ -24,7 +24,7 @@ func CreateGroup(db *sql.DB, group api.Group) error {
 }
 
 func GetGroups(db *sql.DB) ([]api.Group, error) {
-	query := "SELECT id, quantity, number, mag FROM groups"
+	query := "SELECT id, name, quantity, number, mag FROM groups"
 	rows, err := db.Query(query)
 	if err != nil {
 		return nil, err
@@ -34,7 +34,7 @@ func GetGroups(db *sql.DB) ([]api.Group, error) {
 	var groups []api.Group
 	for rows.Next() {
 		var group api.Group
-		err := rows.Scan(&group.ID, &group.Capacity, &group.GroupID, &group.Magistracy)
+		err := rows.Scan(&group.ID, &group.Name, &group.Capacity, &group.GroupID, &group.Magistracy)
 		if err != nil {
 			return nil, err
 		}
@@ -44,19 +44,19 @@ func GetGroups(db *sql.DB) ([]api.Group, error) {
 }
 
 func UpdateGroup(db *sql.DB, group api.Group) error {
-	query := "UPDATE groups SET number = ?, quantity = ?, mag = ? WHERE id = ?"
+	query := "UPDATE groups SET name = ?, number = ?, quantity = ?, mag = ? WHERE id = ?"
 	mag := 0
 	if group.Magistracy {
 		mag = 1
 	}
-	_, err := db.Exec(query, group.GroupID, group.Capacity, mag, group.ID)
+	_, err := db.Exec(query, group.Name, group.GroupID, group.Capacity, mag, group.ID)
 	if err != nil {
 		return err
 	}
 	return nil
 }
 
-func DeleteGroup(db *sql.DB, id string) error {
+func DeleteGroup(db *sql.DB, id int) error {
 	_, err := db.Exec("DELETE FROM schedule.groups WHERE id=?", id)
 	if err != nil {
 		return err
@@ -95,7 +95,7 @@ func InsertGroups(db *sql.DB, groups map[string]*generation.Group) error {
 	if err != nil {
 		return err
 	}
-	query := "INSERT INTO groups (id, quantity) VALUES "
+	query := "INSERT INTO groups (name, quantity) VALUES "
 	for range groups {
 		query += "(?, ?),"
 	}
@@ -124,7 +124,7 @@ func InsertGroups(db *sql.DB, groups map[string]*generation.Group) error {
 func SelectGroups(db *sql.DB) ([]*generation.Group, error) {
 	var groups []*generation.Group
 
-	rows, err := db.Query("SELECT id, quantity FROM groups")
+	rows, err := db.Query("SELECT name, quantity FROM groups")
 	if err != nil {
 		return nil, err
 	}
