@@ -2,11 +2,9 @@ import { Pencil1Icon, TrashIcon } from "@radix-ui/react-icons";
 import { useState } from "react";
 import EditModal from "../modals/editModal.js";
 import styles from '../../shared/style/table.module.css';
-import {useDeleteDisciplinesMutation} from "../api/useDeleteDisciplinesMutation";
 import { DeleteModal } from "../modals/deleteModal.js";
 
 export function EditCell(props) {
-  const deleteDisciplinesMutation = useDeleteDisciplinesMutation();
   const id = props.props.original.id;
   const original = props.props.original;
 

@@ -100,7 +100,11 @@ export const columns = [
       accessor("capacity", {
         header: "",
         size: 50,
-        cell: ({ row }) => !row.subRows.length > 0 && <EditCell props={row} />,
+        cell: ({ row }) =>{
+          console.log(row);
+          if(!row.original.year)
+          return <EditCell props={row} />
+        },
       }),
     ],
   }),

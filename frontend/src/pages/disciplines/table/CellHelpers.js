@@ -2,6 +2,7 @@ import React from 'react';
 
 export const CellHelper = {
     renderRelatedGroups: (row) => {
+        console.log(row);
         const relatedGroupsArray = row.relatedGroupsId;
         return (
             <div style={{ textAlign: 'center' }}>
