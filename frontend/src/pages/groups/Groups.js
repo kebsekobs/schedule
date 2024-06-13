@@ -7,11 +7,10 @@ import Button from "../../components/button";
 const Groups = () => {
   const getGroupsQuery = useGroupsQuery();
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
-  const data = getGroupsQuery.data
+  const data = getGroupsQuery.data;
   const toggleAddModal = () => {
     setIsAddModalOpen(!isAddModalOpen);
   };
-
 
   return (
     <>

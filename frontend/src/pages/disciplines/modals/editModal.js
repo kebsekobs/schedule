@@ -30,7 +30,9 @@ const EditDisciplinesModal = ({ isOpen, toggleModal, original }) => {
   const getGroup = useGroupsQuery().data;
   const teachersQuery = useTeachersQuery();
 
-  const options = getGroup?.map((el) => `${el.groupId} ${el.id}`);
+  const options = getGroup?.map((el) => el.subRows.map((group) => `${group.groupId} ${group.name !== undefined ? group.name : '' }`));
+
+  console.log(options);
 
   const onSubmit = (data) => {
     data.id = id;
