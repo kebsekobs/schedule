@@ -3,6 +3,7 @@ import { useState } from "react";
 import EditModal from "../modals/editModal.js";
 import styles from '../../shared/style/table.module.css';
 import {useDeleteDisciplinesMutation} from "../api/useDeleteDisciplinesMutation";
+import { DeleteModal } from "../modals/deleteModal.js";
 
 export function EditCell(props) {
   const deleteDisciplinesMutation = useDeleteDisciplinesMutation();
@@ -10,13 +11,13 @@ export function EditCell(props) {
   const original = props.props.original;
 
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [isDeleteModalOpen, setisDeleteModalOpen] = useState(false);
 
   const toggleEditModal = () => {
     setIsEditModalOpen(!isEditModalOpen);
   };
-  function deleteDisciplines() {
-    if (window.confirm("Вы уверены, что хотите удалить дисциплинe?"))
-        deleteDisciplinesMutation.mutateAsync({id});
+  function deleteDiscipline() {
+    setisDeleteModalOpen(!isDeleteModalOpen);
   }
 
   return (
@@ -28,7 +29,7 @@ export function EditCell(props) {
         <p>Изменить</p>
         <Pencil1Icon />
       </div>
-      <div className={styles["btns-wrapper"]} onClick={deleteDisciplines}>
+      <div className={styles["btns-wrapper"]} onClick={deleteDiscipline}>
         <p style={{ color: "var(--warning-color)" }}>Удалить</p>
         <TrashIcon />
       </div>
@@ -36,6 +37,13 @@ export function EditCell(props) {
         <EditModal
           toggleModal={toggleEditModal}
           isOpen={isEditModalOpen}
+          original={original}
+        />
+      )}
+            {isDeleteModalOpen && (
+        <DeleteModal
+        deleteDiscipline={deleteDiscipline}
+          isOpen={isDeleteModalOpen}
           original={original}
         />
       )}

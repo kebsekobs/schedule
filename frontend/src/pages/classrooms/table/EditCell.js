@@ -16,11 +16,10 @@ export function EditCell(props) {
     setIsEditModalOpen(!isEditModalOpen);
   };
   function deleteClassroom() {
-    console.log(isDeleteModalOpen);
+    // console.log(isDeleteModalOpen);
     setisDeleteModalOpen(!isDeleteModalOpen);
-    
   }
-    console.log(isDeleteModalOpen)
+    // console.log(isDeleteModalOpen)
   return (
     <div style={{padding: '5px'}}>
       <button

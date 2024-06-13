@@ -3,19 +3,20 @@ import { useDeleteGroupMutation } from "../api/useDeleteGroupMutation";
 import { useState } from "react";
 import EditModal from "../modals/EditModal";
 import styles from '../../shared/style/table.module.css';
+import { DeleteModal } from "../modals/deleteModal";
 
 export function EditCell(props) {
   const deleteGroupMutation = useDeleteGroupMutation();
   const id = props.props.original.id;
   const original = props.props.original;
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [isDeleteModalOpen , setisDeleteModalOpen] = useState(false);
 
   const toggleEditModal = () => {
     setIsEditModalOpen(!isEditModalOpen);
   };
   function deleteGroup() {
-    if (window.confirm("Вы уверены, что хотите удалить группу?")) {}
-      deleteGroupMutation.mutateAsync({id});
+    setisDeleteModalOpen(!isDeleteModalOpen);
   }
 
   return (
@@ -37,6 +38,12 @@ export function EditCell(props) {
           isOpen={isEditModalOpen}
           original={original}
         />
+      )}
+      {isDeleteModalOpen && (
+        <DeleteModal
+        deleteGroup={deleteGroup}
+        isOpen={isDeleteModalOpen}
+        original={original}/>
       )}
     </div>
   );
