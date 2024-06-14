@@ -157,7 +157,7 @@ func SelectClasses(db *sql.DB, groups []*generation.Group, teachers []*generatio
 			log.Println(err)
 			continue
 		}
-		groupIdsRows, err := db.Query("SELECT groupid FROM classes_groups WHERE classid = ?")
+		groupIdsRows, err := db.Query("SELECT groupid FROM classes_groups WHERE classid = ?", id)
 		if err != nil {
 			log.Println(err)
 			continue
@@ -165,7 +165,7 @@ func SelectClasses(db *sql.DB, groups []*generation.Group, teachers []*generatio
 		defer groupIdsRows.Close()
 		for groupIdsRows.Next() {
 			var groupID string
-			err = rows.Scan(&groupID)
+			err = groupIdsRows.Scan(&groupID)
 			if err != nil {
 				log.Println(err)
 				continue

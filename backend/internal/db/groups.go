@@ -10,8 +10,8 @@ import (
 
 // CRUD методы для таблицы "groups"
 func CreateGroup(db *sql.DB, group api.Group) error {
-	query := "INSERT INTO groups (number, name, quantity, mag) VALUES (?,?, ?, ?)"
-	query += " ON DUPLICATE KEY UPDATE number, name, quantity, mag = VALUES(number, name, quantity, mag)"
+	query := "INSERT INTO groups (number, name, quantity, mag) VALUES (?, ?, ?, ?)"
+	// query += " ON DUPLICATE KEY UPDATE (number, name, quantity, mag) VALUES(number, name, quantity, mag)"
 	mag := 0
 	if group.Magistracy {
 		mag = 1

@@ -211,10 +211,11 @@ func generate(w http.ResponseWriter, r *http.Request) {
 	}
 
 	classes, commonClasses, err := db.SelectClasses(_db, groups, teachers)
+	time.Sleep(time.Second * 5)
 	if err != nil {
 		log.Println(err)
 		w.WriteHeader(http.StatusBadRequest)
-		resp.Message = "Rooms select error"
+		resp.Message = "Classes select error"
 		response, err := json.Marshal(resp)
 		if err != nil {
 			http.Error(w, "Error processing data", http.StatusInternalServerError)
